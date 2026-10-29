@@ -1,0 +1,3378 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>یردیا.نت — صرافی بلاکچین</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #050508;
+    --glass-bg: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.10);
+    --glass-shine: rgba(255,255,255,0.06);
+    --accent-cyan: #00ffd0;
+    --accent-blue: #4361ee;
+    --accent-purple: #7b2fff;
+    
+    --accent-green: #06d6a0;
+    --accent-red: #ff0522;
+    --text-primary: #f0f2ff;
+    --text-secondary: rgba(240,242,255,0.55);
+    --text-muted: rgba(240,242,255,0.30);
+    --glow-cyan: 0 0 40px rgba(0,245,212,0.12);
+    --glow-blue: 0 0 40px rgba(67,97,238,0.15);
+  }
+
+  html.theme-light {
+    --black: #ffffff;
+    --glass-bg: rgba(11, 11, 19, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shine: rgba(10,10,20,0.06);
+    --text-primary: #0b0c14;
+    --text-secondary: rgba(11,12,20,0.60);
+    --text-muted: rgba(11,12,20,0.38);
+  }
+  html.theme-light body::before,
+  html.theme-light body::after { opacity: 0.5; }
+
+  .theme-toggle-btn { font-size: 15px; padding: 8px 12px; }
+
+  body {
+    background: var(--black);
+    color: var(--text-primary);
+    font-family: 'Vazirmatn', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated mesh background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(67,97,238,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 80% 70%, rgba(0,245,212,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(123,47,255,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Grid overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { position: relative; z-index: 1; }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    height: 64px;
+    background: rgba(5,5,8,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .logo span { color: var(--accent-cyan); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .nav-links a {
+    color: inherit; text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .nav-links a:hover { color: var(--text-primary); }
+  .nav-links a.active { color: var(--accent-cyan); }
+
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+  .btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'Vazirmatn', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--glass-border);
+  }
+  .btn-ghost:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.2); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    color: white;
+    box-shadow: 0 4px 20px rgba(67,97,238,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(67,97,238,0.45); }
+
+  /* ── TICKER BAR ── */
+  .ticker {
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 8px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-inner {
+    display: inline-flex;
+    gap: 3rem;
+    animation: scroll 28s linear infinite;
+    padding-right: 3rem;
+  }
+  .ticker-inner:hover { animation-play-state: paused; }
+  @keyframes scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .ticker-name { color: var(--text-secondary); font-weight: 500; }
+  .ticker-price { color: var(--text-primary); font-weight: 600; }
+  .ticker-change.up { color: var(--accent-green); }
+  .ticker-change.dn { color: var(--accent-red); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 2rem 60px;
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,245,212,0.08);
+    border: 1px solid rgba(0,245,212,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 12px;
+    color: var(--accent-cyan);
+    margin-bottom: 28px;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 17px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 36px;
+  }
+  .hero-ctas { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .btn-large { padding: 14px 32px; font-size: 15px; border-radius: 10px; }
+  .btn-outline-cyan {
+    background: transparent;
+    color: var(--accent-cyan);
+    border: 1px solid rgba(0,245,212,0.35);
+    font-family: 'Vazirmatn', sans-serif;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-outline-cyan:hover { background: rgba(0,245,212,0.07); }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--glass-border);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+    max-width: 700px;
+    margin: 0 auto 72px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .stat {
+    background: rgba(255,255,255,0.03);
+    padding: 24px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -1px;
+  }
+  .stat-num span { color: var(--accent-cyan); }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ── MAIN LAYOUT ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 20px;
+    padding: 0 2rem 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── GLASS CARD ── */
+  .glass-card {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    overflow: hidden;
+    position: relative;
+  }
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    pointer-events: none;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .card-title { font-size: 15px; font-weight: 600; }
+  .card-body { padding: 20px 24px; }
+
+  /* ── MARKET TABLE ── */
+  .market-table { width: 100%; border-collapse: collapse; }
+  .market-table th {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-align: right;
+    padding: 0 0 14px;
+    border-bottom: 1px solid var(--glass-border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .market-table td {
+    padding: 14px 0;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .market-table tr:last-child td { border-bottom: none; }
+  .market-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .coin-cell { display: flex; align-items: center; gap: 10px; }
+  .coin-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .coin-name { font-weight: 600; font-size: 13px; }
+  .coin-sym { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  .price-col { font-weight: 600; }
+  .change-col { font-weight: 500; font-size: 13px; }
+  .up { color: var(--accent-green); }
+  .dn { color: var(--accent-red); }
+
+  .sparkline { display: flex; align-items: center; gap: 1px; }
+  .sparkline span {
+    width: 3px;
+    border-radius: 2px;
+    background: var(--accent-cyan);
+    transition: height 0.3s;
+  }
+
+  .trade-btn {
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,245,212,0.2);
+    background: rgba(0,245,212,0.06);
+    color: var(--accent-cyan);
+    font-size: 12px;
+    font-family: 'Vazirmatn', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .trade-btn:hover { background: rgba(0,245,212,0.12); border-color: rgba(0,245,212,0.35); }
+
+  /* ── TRADE PANEL ── */
+  .trade-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .trade-tab {
+    padding: 14px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'Vazirmatn', sans-serif;
+  }
+  .trade-tab.buy.active {
+    background: rgba(6,214,160,0.1);
+    color: var(--accent-green);
+    border-bottom: 2px solid var(--accent-green);
+  }
+  .trade-tab.sell.active {
+    background: rgba(239,35,60,0.1);
+    color: var(--accent-red);
+    border-bottom: 2px solid var(--accent-red);
+  }
+  .trade-tab:not(.active):hover { color: var(--text-secondary); }
+
+  .trade-form { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  .field-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field-input {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: 'Vazirmatn', sans-serif;
+    font-weight: 600;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .field-input:focus { border-color: rgba(0,245,212,0.4); }
+  .field-suffix { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+
+  .pct-btns { display: flex; gap: 6px; margin-top: 8px; }
+  .pct-btn {
+    flex: 1; padding: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-family: 'Vazirmatn', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .pct-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+
+  .order-summary {
+    background: rgba(255,255,255,0.02);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+  .summary-row .label { color: var(--text-muted); }
+  .summary-row .val { font-weight: 500; }
+
+  .btn-submit-buy {
+    background: linear-gradient(135deg, #06d6a0, #00b4a0);
+    color: #001a15;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 15px;
+    font-family: 'Vazirmatn', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(6,214,160,0.25);
+    transition: all 0.2s;
+  }
+  .btn-submit-buy:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(6,214,160,0.4); }
+
+  .btn-submit-sell {
+    background: linear-gradient(135deg, #ef233c, #c1121f);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 15px;
+    font-family: 'Vazirmatn', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(239,35,60,0.25);
+    transition: all 0.2s;
+    display: none;
+  }
+  .btn-submit-sell.show { display: block; }
+  .btn-submit-buy.hide { display: none; }
+
+  /* ── WALLET ── */
+  .wallet-items { display: flex; flex-direction: column; gap: 2px; }
+  .wallet-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .wallet-item:last-child { border-bottom: none; }
+  .w-coin { display: flex; align-items: center; gap: 10px; }
+  .w-amount { text-align: left; }
+  .w-amount .main { font-weight: 600; font-size: 14px; }
+  .w-amount .usd { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── CHART MINI ── */
+  .chart-area {
+    position: relative;
+    height: 180px;
+    margin: 0 -24px;
+    overflow: hidden;
+  }
+  .chart-area svg { width: 100%; height: 100%; }
+
+  /* ── RECENT TXS ── */
+  .tx-list { display: flex; flex-direction: column; gap: 2px; }
+  .tx-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .tx-item:last-child { border-bottom: none; }
+  .tx-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .tx-icon.buy { background: rgba(6,214,160,0.1); }
+  .tx-icon.sell { background: rgba(239,35,60,0.1); }
+  .tx-info { flex: 1; margin: 0 12px; }
+  .tx-name { font-size: 13px; font-weight: 500; }
+  .tx-time { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .tx-amount { text-align: left; }
+  .tx-amount .am { font-size: 13px; font-weight: 600; }
+  .tx-amount .am.up { color: var(--accent-green); }
+  .tx-amount .am.dn { color: var(--accent-red); }
+  .tx-amount .usd { font-size: 11px; color: var(--text-muted); }
+
+  /* ── SIDEBAR SECTIONS ── */
+  .sidebar-col { display: flex; flex-direction: column; gap: 20px; }
+
+  /* ── BLOCKCHAIN VIZ ── */
+  .blocks-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow: hidden;
+    padding: 4px 0;
+  }
+  .block-unit {
+    display: flex;
+    align-items: center;
+  }
+  .block-box {
+    width: 48px; height: 48px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    color: var(--text-muted);
+    font-weight: 600;
+    border: 1px solid;
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .block-box:hover { transform: translateY(-2px); }
+  .block-box.confirmed {
+    background: rgba(67,97,238,0.12);
+    border-color: rgba(67,97,238,0.3);
+  }
+  .block-box.recent {
+    background: rgba(0,245,212,0.1);
+    border-color: rgba(0,245,212,0.35);
+    color: var(--accent-cyan);
+  }
+  .block-box.pending {
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+    animation: blink 1.5s ease infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .chain-link {
+    width: 20px; height: 2px;
+    background: linear-gradient(90deg, rgba(67,97,238,0.5), rgba(0,245,212,0.5));
+    flex-shrink: 0;
+  }
+
+  .block-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .block-meta span { color: var(--accent-cyan); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--glass-border);
+    padding: 40px 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .footer-brand .logo { margin-bottom: 12px; }
+  .footer-brand p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .footer-col h4 { font-size: 13px; font-weight: 600; margin-bottom: 14px; color: var(--text-secondary); }
+  .footer-col a {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .footer-col a:hover { color: var(--text-primary); }
+  .footer-bottom {
+    border-top: 1px solid var(--glass-border);
+    padding: 20px 2rem;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── INPUT REAL ── */
+  input[type=number] {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: 'Vazirmatn', sans-serif;
+    font-weight: 600;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+  input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  input[type=number]:focus { border-color: rgba(0,245,212,0.4); }
+
+  select {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-family: 'Vazirmatn', sans-serif;
+    outline: none;
+    cursor: pointer;
+  }
+
+  @media(max-width: 900px) {
+    .main-grid { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr 1fr; }
+    .hero h1 { font-size: 36px; }
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">⬡</div>
+    بردیا<span>.نت</span>
+  </div>
+  <ul class="nav-links">
+    <li><a class="active" id="nav-market" onclick="showPage('market')">بازار</a></li>
+    <li><a id="nav-trade" onclick="showPage('trade')">معامله</a></li>
+    <li><a id="nav-blockchain" onclick="showPage('blockchain')">بلاکچین</a></li>
+    <li><a id="nav-wallet" onclick="showPage('wallet')">کیف پول</a></li>
+    <li><a id="nav-support" onclick="showPage('support')">پشتیبانی</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn btn-ghost theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" title="تغییر تم" aria-label="تغییر تم">🌙</button>
+    <button class="btn btn-ghost" onclick="openModal('login')">ورود</button>
+    <button class="btn btn-primary" onclick="openModal('register')">ثبت‌نام رایگان</button>
+  </div>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker">
+    <div class="ticker-item">
+      <span class="ticker-name">BTC</span>
+      <span class="ticker-price">$۶۷,۴۲۰</span>
+      <span class="ticker-change up">▲ ۲.۳۴٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">ETH</span>
+      <span class="ticker-price">$۳,۵۸۱</span>
+      <span class="ticker-change up">▲ ۱.۷۸٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">BNB</span>
+      <span class="ticker-price">$۵۹۲</span>
+      <span class="ticker-change dn">▼ ۰.۴۵٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">SOL</span>
+      <span class="ticker-price">$۱۷۸</span>
+      <span class="ticker-change up">▲ ۵.۱۲٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">ADA</span>
+      <span class="ticker-price">$۰.۴۸</span>
+      <span class="ticker-change dn">▼ ۱.۲۳٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">AVAX</span>
+      <span class="ticker-price">$۳۸.۹</span>
+      <span class="ticker-change up">▲ ۳.۶۷٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">MATIC</span>
+      <span class="ticker-price">$۰.۸۷</span>
+      <span class="ticker-change up">▲ ۰.۹۸٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">DOT</span>
+      <span class="ticker-price">$۷.۲۳</span>
+      <span class="ticker-change dn">▼ ۲.۱۱٪</span>
+    </div>
+    <!-- duplicate for seamless scroll -->
+    <div class="ticker-item">
+      <span class="ticker-name">BTC</span>
+      <span class="ticker-price">$۶۷,۴۲۰</span>
+      <span class="ticker-change up">▲ ۲.۳۴٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">ETH</span>
+      <span class="ticker-price">$۳,۵۸۱</span>
+      <span class="ticker-change up">▲ ۱.۷۸٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">BNB</span>
+      <span class="ticker-price">$۵۹۲</span>
+      <span class="ticker-change dn">▼ ۰.۴۵٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">SOL</span>
+      <span class="ticker-price">$۱۷۸</span>
+      <span class="ticker-change up">▲ ۵.۱۲٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">ADA</span>
+      <span class="ticker-price">$۰.۴۸</span>
+      <span class="ticker-change dn">▼ ۱.۲۳٪</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">AVAX</span>
+      <span class="ticker-price">$۳۸.۹</span>
+      <span class="ticker-change up">▲ ۳.۶۷٪</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">شبکه بلاکچین — ۲۴/۷ فعال</div>
+  <h1>معامله در آینده<br><em>دارایی دیجیتال</em></h1>
+  <p>صرافی متمرکز با پردازش تراکنش آنی، کارمزد صفر برای ۳۰ روز اول، و امنیت درجه یک بلاکچین</p>
+  <div class="hero-ctas">
+    <button class="btn btn-primary btn-large" onclick="openModal('register')">شروع معامله ←</button>
+    <button class="btn btn-outline-cyan btn-large" onclick="openMarketPage()">مشاهده بازار</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div style="max-width:1200px;margin:0 auto;padding:0 2rem;">
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-num">$<span>۴.۲</span>B</div>
+      <div class="stat-label">حجم معاملات ۲۴ساعته</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span>۱.۸</span>M+</div>
+      <div class="stat-label">کاربر فعال</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num"><span>۱۸۰</span>+</div>
+      <div class="stat-label">ارز دیجیتال</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main-grid">
+
+  <!-- LEFT COL -->
+  <div style="display:flex;flex-direction:column;gap:20px;">
+
+    <!-- MARKET TABLE -->
+    <div class="glass-card">
+      <div class="card-header">
+        <span class="card-title">بازار زنده</span><span id="lastUpdate" style="font-size:11px;color:var(--text-muted);">در حال بارگذاری...</span><span style="font-size:10px;color:var(--text-muted);margin-right:6px;" id="srcLabel">نوبیتکس</span><span id="statusDot" style="width:7px;height:7px;border-radius:50%;background:var(--accent-cyan);display:inline-block;animation:pulse 2s infinite;margin-right:4px;"></span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select>
+            <option>همه ارزها</option>
+            <option>لایه ۱</option>
+            <option>DeFi</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body" style="padding:0 24px;">
+        <table class="market-table">
+          <thead>
+            <tr>
+              <th>ارز</th>
+              <th style="text-align:left;">قیمت (USDT)</th>
+              <th style="text-align:left;">۲۴ساعت</th>
+              <th style="text-align:left;">۷ روز</th>
+              <th style="text-align:left;">ارزش بازار</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr id="row-btc">
+              <td>
+                <div class="coin-cell">
+                  <div class="coin-icon" style="background:rgba(247,147,26,0.15);color:#f7931a;">₿</div>
+                  <div>
+                    <div class="coin-name">Bitcoin</div>
+                    <div class="coin-sym">BTC</div>
+                  </div>
+                </div>
+              </td>
+              <td class="price-col" style="text-align:left;">۶۷,۴۲۰</td>
+              <td class="change-col up" style="text-align:left;">▲ ۲.۳٪</td>
+              <td style="text-align:left;">
+                <div class="sparkline">
+                  <span style="height:10px"></span><span style="height:14px"></span><span style="height:8px"></span><span style="height:16px"></span><span style="height:12px"></span><span style="height:18px"></span><span style="height:22px"></span>
+                </div>
+              </td>
+              <td style="text-align:left;font-size:13px;color:var(--text-secondary);">$۱.۳T</td>
+              <td><button class="trade-btn">معامله</button></td>
+            </tr>
+            <tr id="row-eth">
+              <td>
+                <div class="coin-cell">
+                  <div class="coin-icon" style="background:rgba(98,126,234,0.15);color:#627eea;">Ξ</div>
+                  <div>
+                    <div class="coin-name">Ethereum</div>
+                    <div class="coin-sym">ETH</div>
+                  </div>
+                </div>
+              </td>
+              <td class="price-col" style="text-align:left;">۳,۵۸۱</td>
+              <td class="change-col up" style="text-align:left;">▲ ۱.۷٪</td>
+              <td style="text-align:left;">
+                <div class="sparkline">
+                  <span style="height:16px"></span><span style="height:12px"></span><span style="height:18px"></span><span style="height:14px"></span><span style="height:20px"></span><span style="height:16px"></span><span style="height:22px"></span>
+                </div>
+              </td>
+              <td style="text-align:left;font-size:13px;color:var(--text-secondary);">$۴۳۰B</td>
+              <td><button class="trade-btn">معامله</button></td>
+            </tr>
+            <tr id="row-sol">
+              <td>
+                <div class="coin-cell">
+                  <div class="coin-icon" style="background:rgba(20,241,149,0.12);color:#14f195;">◎</div>
+                  <div>
+                    <div class="coin-name">Solana</div>
+                    <div class="coin-sym">SOL</div>
+                  </div>
+                </div>
+              </td>
+              <td class="price-col" style="text-align:left;">۱۷۸.۵</td>
+              <td class="change-col up" style="text-align:left;">▲ ۵.۱٪</td>
+              <td style="text-align:left;">
+                <div class="sparkline">
+                  <span style="height:6px"></span><span style="height:10px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:18px"></span><span style="height:20px"></span><span style="height:24px"></span>
+                </div>
+              </td>
+              <td style="text-align:left;font-size:13px;color:var(--text-secondary);">$۸۱B</td>
+              <td><button class="trade-btn">معامله</button></td>
+            </tr>
+            <tr id="row-avax">
+              <td>
+                <div class="coin-cell">
+                  <div class="coin-icon" style="background:rgba(0,209,240,0.12);color:#00d1f0;">▲</div>
+                  <div>
+                    <div class="coin-name">Avalanche</div>
+                    <div class="coin-sym">AVAX</div>
+                  </div>
+                </div>
+              </td>
+              <td class="price-col" style="text-align:left;">۳۸.۹</td>
+              <td class="change-col up" style="text-align:left;">▲ ۳.۶٪</td>
+              <td style="text-align:left;">
+                <div class="sparkline">
+                  <span style="height:12px"></span><span style="height:8px"></span><span style="height:14px"></span><span style="height:10px"></span><span style="height:16px"></span><span style="height:20px"></span><span style="height:18px"></span>
+                </div>
+              </td>
+              <td style="text-align:left;font-size:13px;color:var(--text-secondary);">$۱۶B</td>
+              <td><button class="trade-btn">معامله</button></td>
+            </tr>
+            <tr id="row-ada">
+              <td>
+                <div class="coin-cell">
+                  <div class="coin-icon" style="background:rgba(239,35,60,0.12);color:#ef233c;">●</div>
+                  <div>
+                    <div class="coin-name">Cardano</div>
+                    <div class="coin-sym">ADA</div>
+                  </div>
+                </div>
+              </td>
+              <td class="price-col" style="text-align:left;">۰.۴۸</td>
+              <td class="change-col dn" style="text-align:left;">▼ ۱.۲٪</td>
+              <td style="text-align:left;">
+                <div class="sparkline" style="--c:var(--accent-red)">
+                  <span style="height:20px;background:var(--accent-red)"></span><span style="height:16px;background:var(--accent-red)"></span><span style="height:18px;background:var(--accent-red)"></span><span style="height:14px;background:var(--accent-red)"></span><span style="height:12px;background:var(--accent-red)"></span><span style="height:10px;background:var(--accent-red)"></span><span style="height:8px;background:var(--accent-red)"></span>
+                </div>
+              </td>
+              <td style="text-align:left;font-size:13px;color:var(--text-secondary);">$۱۷B</td>
+              <td><button class="trade-btn">معامله</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RECENT TRANSACTIONS -->
+    <div class="glass-card">
+      <div class="card-header">
+        <span class="card-title">تراکنش‌های اخیر</span>
+        <span style="font-size:12px;color:var(--text-muted);cursor:pointer;">مشاهده همه ←</span>
+      </div>
+      <div class="card-body" style="padding-top:0">
+        <div class="tx-list">
+          <div class="tx-item">
+            <div class="tx-icon buy">↑</div>
+            <div class="tx-info">
+              <div class="tx-name">خرید BTC</div>
+              <div class="tx-time">۲ دقیقه پیش · تأیید شد</div>
+            </div>
+            <div class="tx-amount">
+              <div class="am up">+۰.۰۱۴ BTC</div>
+              <div class="usd">$۹۴۳</div>
+            </div>
+          </div>
+          <div class="tx-item">
+            <div class="tx-icon sell">↓</div>
+            <div class="tx-info">
+              <div class="tx-name">فروش ETH</div>
+              <div class="tx-time">۱۵ دقیقه پیش · تأیید شد</div>
+            </div>
+            <div class="tx-amount">
+              <div class="am dn">-۰.۵ ETH</div>
+              <div class="usd">$۱,۷۹۰</div>
+            </div>
+          </div>
+          <div class="tx-item">
+            <div class="tx-icon buy">↑</div>
+            <div class="tx-info">
+              <div class="tx-name">خرید SOL</div>
+              <div class="tx-time">۴۵ دقیقه پیش · تأیید شد</div>
+            </div>
+            <div class="tx-amount">
+              <div class="am up">+۵ SOL</div>
+              <div class="usd">$۸۹۲</div>
+            </div>
+          </div>
+          <div class="tx-item">
+            <div class="tx-icon buy">↑</div>
+            <div class="tx-info">
+              <div class="tx-name">خرید AVAX</div>
+              <div class="tx-time">۲ ساعت پیش · تأیید شد</div>
+            </div>
+            <div class="tx-amount">
+              <div class="am up">+۲۰ AVAX</div>
+              <div class="usd">$۷۷۸</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-col">
+
+    <!-- TRADE PANEL -->
+    <div class="glass-card">
+      <div class="trade-tabs">
+        <button class="trade-tab buy active" id="buyTab" onclick="setTab('buy')">خرید</button>
+        <button class="trade-tab sell" id="sellTab" onclick="setTab('sell')">فروش</button>
+      </div>
+      <div class="trade-form">
+        <div>
+          <div class="field-label">ارز</div>
+          <select style="width:100%;font-size:14px;padding:12px 14px;color:var(--text-primary);" onchange="onCoinSelect(this)">
+            <option>₿ Bitcoin — BTC</option>
+            <option>Ξ Ethereum — ETH</option>
+            <option>◎ Solana — SOL</option>
+            <option>▲ Avalanche — AVAX</option>
+          </select>
+        </div>
+        <div>
+          <div class="field-label">مقدار (USDT)</div>
+          <input type="number" id="amount" value="500" oninput="calcOrder()" placeholder="مبلغ به تومان">
+          <div class="pct-btns">
+            <button class="pct-btn" onclick="setPct(25)">۲۵٪</button>
+            <button class="pct-btn" onclick="setPct(50)">۵۰٪</button>
+            <button class="pct-btn" onclick="setPct(75)">۷۵٪</button>
+            <button class="pct-btn" onclick="setPct(100)">۱۰۰٪</button>
+          </div>
+        </div>
+        <div class="order-summary">
+          <div class="summary-row">
+            <span class="label">قیمت BTC</span>
+            <span class="val" id="livePrice">$67,420</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">مقدار BTC</span>
+            <span class="val" id="btcAmount">≈ ۰.۰۰۷۴ BTC</span>
+          </div>
+          <div class="summary-row">
+            <span class="label">کارمزد</span>
+            <span class="val" style="color:var(--accent-cyan)">$۰ (رایگان)</span>
+          </div>
+          <div class="summary-row" style="border-top:1px solid var(--glass-border);padding-top:8px;margin-top:4px;">
+            <span class="label">مجموع</span>
+            <span class="val" id="total" style="font-size:15px;">$۵۰۰</span>
+          </div>
+        </div>
+        <button class="btn-submit-buy" id="buyBtn" onclick="handleBuyClick()">خرید BTC ←</button>
+        <button class="btn-submit-sell" id="sellBtn">فروش BTC ←</button>
+      </div>
+    </div>
+
+    <!-- WALLET -->
+    <div class="glass-card">
+      <div class="card-header">
+        <span class="card-title">کیف پول من</span>
+        <span style="font-size:13px;font-weight:700;color:var(--accent-cyan);">$۱۲,۴۸۰</span>
+      </div>
+      <div class="card-body" style="padding-top:0">
+        <div class="wallet-items">
+          <div class="wallet-item">
+            <div class="w-coin">
+              <div class="coin-icon" style="width:32px;height:32px;background:rgba(247,147,26,0.15);color:#f7931a;font-size:12px;">₿</div>
+              <div>
+                <div style="font-size:13px;font-weight:500;">Bitcoin</div>
+                <div style="font-size:11px;color:var(--text-muted);">BTC</div>
+              </div>
+            </div>
+            <div class="w-amount">
+              <div class="main">۰.۰۸۲ BTC</div>
+              <div class="usd">$۵,۵۲۸</div>
+            </div>
+          </div>
+          <div class="wallet-item">
+            <div class="w-coin">
+              <div class="coin-icon" style="width:32px;height:32px;background:rgba(98,126,234,0.15);color:#627eea;font-size:12px;">Ξ</div>
+              <div>
+                <div style="font-size:13px;font-weight:500;">Ethereum</div>
+                <div style="font-size:11px;color:var(--text-muted);">ETH</div>
+              </div>
+            </div>
+            <div class="w-amount">
+              <div class="main">۱.۸ ETH</div>
+              <div class="usd">$۶,۴۴۵</div>
+            </div>
+          </div>
+          <div class="wallet-item">
+            <div class="w-coin">
+              <div class="coin-icon" style="width:32px;height:32px;background:rgba(20,241,149,0.12);color:#14f195;font-size:12px;">◎</div>
+              <div>
+                <div style="font-size:13px;font-weight:500;">Solana</div>
+                <div style="font-size:11px;color:var(--text-muted);">SOL</div>
+              </div>
+            </div>
+            <div class="w-amount">
+              <div class="main">۲.۸ SOL</div>
+              <div class="usd">$۵۰۰</div>
+            </div>
+          </div>
+          <div class="wallet-item">
+            <div class="w-coin">
+              <div class="coin-icon" style="width:32px;height:32px;background:rgba(255,255,255,0.06);color:var(--text-secondary);font-size:11px;">$</div>
+              <div>
+                <div style="font-size:13px;font-weight:500;">موجودی USDT</div>
+                <div style="font-size:11px;color:var(--text-muted);">Tether</div>
+              </div>
+            </div>
+            <div class="w-amount">
+              <div class="main">$۷.۵</div>
+              <div class="usd">USDT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECURITY BADGE -->
+    <div class="glass-card" style="background:linear-gradient(135deg,rgba(67,97,238,0.08),rgba(123,47,255,0.08));">
+      <div class="card-body" style="text-align:center;padding:28px;">
+        <div style="font-size:32px;margin-bottom:12px;">🔐</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:6px;">امنیت درجه یک</div>
+        <div style="font-size:12px;color:var(--text-muted);line-height:1.6;">رمزگذاری AES-256، احراز هویت دوعاملی، و پشتیبان‌گیری لحظه‌ای</div>
+        <div style="display:flex;justify-content:center;gap:16px;margin-top:16px;font-size:11px;color:var(--text-muted);">
+          <span>✓ SSL/TLS</span>
+          <span>✓ 2FA</span>
+          <span>✓ آفلاین ذخیره</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- SUPPORT SECTION -->
+<div style="max-width:1200px;margin:0 auto 60px;padding:0 2rem;">
+  <div class="glass-card" style="background:linear-gradient(135deg,rgba(67,97,238,0.07),rgba(0,245,212,0.05),rgba(123,47,255,0.07));border-color:rgba(0,245,212,0.15);">
+    <div style="padding:48px 40px;text-align:center;">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,245,212,0.08);border:1px solid rgba(0,245,212,0.2);border-radius:100px;padding:6px 18px;font-size:12px;color:var(--accent-cyan);margin-bottom:24px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--accent-cyan);display:inline-block;animation:pulse 2s ease infinite;"></span>
+        پشتیبانی آنلاین
+      </div>
+      <h2 style="font-size:30px;font-weight:700;letter-spacing:-1px;margin-bottom:12px;">نیاز به کمک داری؟</h2>
+      <p style="font-size:15px;color:var(--text-secondary);margin-bottom:40px;max-width:460px;margin-left:auto;margin-right:auto;line-height:1.7;">تیم پشتیبانی بردیا.نت آماده‌ست تا در سریع‌ترین زمان ممکن پاسخگوی سوالات شما باشد</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:700px;margin:0 auto;">
+        <div style="background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:16px;padding:28px 24px;text-align:center;transition:all 0.2s;cursor:pointer;" onmouseover="this.style.borderColor='rgba(0,245,212,0.3)';this.style.background='rgba(0,245,212,0.06)'" onmouseout="this.style.borderColor='var(--glass-border)';this.style.background='rgba(255,255,255,0.04)'">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(6,214,160,0.12);border:1px solid rgba(6,214,160,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;">📞</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;font-weight:500;">تماس مستقیم</div>
+          <a href="tel:09306887544" style="font-size:20px;font-weight:700;color:var(--accent-cyan);text-decoration:none;letter-spacing:1px;direction:ltr;display:block;">۰۹۳۰۶۸۸۷۵۴۴</a>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">شنبه تا پنجشنبه · ۹ تا ۲۱</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:16px;padding:28px 24px;text-align:center;transition:all 0.2s;cursor:pointer;" onmouseover="this.style.borderColor='rgba(67,97,238,0.4)';this.style.background='rgba(67,97,238,0.07)'" onmouseout="this.style.borderColor='var(--glass-border)';this.style.background='rgba(255,255,255,0.04)'" onclick="window.open('https://ble.ir/bardi1392','_blank')">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(67,97,238,0.15);border:1px solid rgba(67,97,238,0.25);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;">💬</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;font-weight:500;">اپلیکیشن بله</div>
+          <div style="font-size:20px;font-weight:700;color:#4361ee;letter-spacing:0.5px;">@bardi1392</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">پاسخ سریع · معمولاً زیر 30 دقیقه</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:16px;padding:28px 24px;text-align:center;transition:all 0.2s;cursor:pointer;" onmouseover="this.style.borderColor='rgba(0,245,212,0.3)';this.style.background='rgba(0,245,212,0.06)'" onmouseout="this.style.borderColor='var(--glass-border)';this.style.background='rgba(255,255,255,0.04)'" onclick="window.open('https://t.me/bardim92','_blank')">
+          <div style="width:52px;height:52px;border-radius:14px;background:rgba(0,245,212,0.12);border:1px solid rgba(0,245,212,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 16px;">✈️</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px;font-weight:500;">تلگرام</div>
+          <div style="font-size:20px;font-weight:700;color:var(--accent-cyan);letter-spacing:0.5px;direction:ltr;">@bardim92</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">پاسخ سریع · ۲۴ ساعته</div>
+        </div>
+      </div>
+      <div style="margin-top:32px;font-size:12px;color:var(--text-muted);">🔒 تمامی مکالمات رمزگذاری شده و محرمانه هستند</div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ── LIVE PRICE ENGINE — چند صرافی ایرانی + فال‌بک جهانی ──
+const COINS = {
+  bitcoin:   { sym:'BTC',  el:'btc',  icon:'₿', color:'#f7931a', bg:'rgba(247,147,26,0.15)' },
+  ethereum:  { sym:'ETH',  el:'eth',  icon:'Ξ', color:'#627eea', bg:'rgba(98,126,234,0.15)'  },
+  solana:    { sym:'SOL',  el:'sol',  icon:'◎', color:'#14f195', bg:'rgba(20,241,149,0.12)'  },
+  avalanche: { sym:'AVAX', el:'avax', icon:'▲', color:'#00d1f0', bg:'rgba(0,209,240,0.12)'  },
+  cardano:   { sym:'ADA',  el:'ada',  icon:'●', color:'#ef233c', bg:'rgba(239,35,60,0.12)'  },
+};
+const IDS = Object.keys(COINS).join(',');
+
+let prices = { bitcoin:67420, ethereum:3581, solana:178, avalanche:38.9, cardano:0.48 };
+let changes = { bitcoin:2.3,  ethereum:1.7,  solana:5.1, avalanche:3.6,  cardano:-1.2  };
+let prevPrices = {...prices};
+let selectedCoinId = 'bitcoin';
+let activeSource = '—';
+
+const ROW_MAP = {
+  bitcoin:'row-btc', ethereum:'row-eth', solana:'row-sol',
+  avalanche:'row-avax', cardano:'row-ada'
+};
+
+// ── فرمت‌دهی ──
+function fmtPrice(p) {
+  if (p >= 1000) return '$' + p.toLocaleString('en', {maximumFractionDigits:0});
+  if (p >= 1)    return '$' + p.toFixed(2);
+  return '$' + p.toFixed(4);
+}
+
+// ── آپدیت جدول ──
+function updateTable() {
+  Object.entries(COINS).forEach(([id, c]) => {
+    const p   = prices[id]  || 0;
+    const ch  = changes[id] || 0;
+    const row = document.getElementById(ROW_MAP[id]);
+    if (!row) return;
+    const cells = row.querySelectorAll('td');
+    const priceCell  = cells[1];
+    const changeCell = cells[2];
+    priceCell.textContent  = fmtPrice(p).replace('$','');
+    changeCell.textContent = (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '٪';
+    changeCell.className   = 'change-col ' + (ch >= 0 ? 'up' : 'dn');
+    // flash on change
+    if (prevPrices[id] && prevPrices[id] !== p) {
+      priceCell.style.transition = 'color 0.4s';
+      priceCell.style.color = p > prevPrices[id] ? 'var(--accent-green)' : 'var(--accent-red)';
+      setTimeout(() => { priceCell.style.color = ''; }, 800);
+    }
+  });
+  prevPrices = {...prices};
+}
+
+// ── آپدیت تیکر ──
+function updateTicker() {
+  const items    = document.querySelectorAll('.ticker-item');
+  const coinList = Object.entries(COINS);
+  items.forEach((item, i) => {
+    const [id, c] = coinList[i % coinList.length];
+    const p  = prices[id]  || 0;
+    const ch = changes[id] || 0;
+    const priceEl = item.querySelector('.ticker-price');
+    const chEl    = item.querySelector('.ticker-change');
+    if (priceEl) priceEl.textContent = fmtPrice(p);
+    if (chEl) {
+      chEl.textContent = (ch >= 0 ? '▲ ' : '▼ ') + Math.abs(ch).toFixed(2) + '٪';
+      chEl.className   = 'ticker-change ' + (ch >= 0 ? 'up' : 'dn');
+    }
+  });
+}
+
+// ── آپدیت پنل معامله ──
+function updateTradePanel() {
+  const p = prices[selectedCoinId] || 1;
+  const c = COINS[selectedCoinId];
+  const amt     = parseFloat(document.getElementById('amount').value) || 0;
+  const coinAmt = (amt / p).toFixed(6);
+  const lp = document.getElementById('livePrice');
+  const ba = document.getElementById('btcAmount');
+  const tt = document.getElementById('total');
+  if (lp) lp.textContent = fmtPrice(p);
+  if (ba) ba.textContent = '≈ ' + coinAmt + ' ' + c.sym;
+  if (tt) tt.textContent = '$' + amt.toLocaleString('en');
+  const bb = document.getElementById('buyBtn');
+  const sb = document.getElementById('sellBtn');
+  if (bb) bb.textContent = 'خرید '  + c.sym + ' ←';
+  if (sb) sb.textContent = 'فروش ' + c.sym + ' ←';
+}
+
+// ── نمایش زمان و منبع ──
+function updateStatus(src, ok) {
+  activeSource = src;
+  const now = new Date();
+  const t   = now.toTimeString().slice(0,8);
+  const el  = document.getElementById('lastUpdate');
+  const dot = document.getElementById('statusDot');
+  const srcEl = document.getElementById('srcLabel');
+  if (el)    el.textContent  = 'آخرین بروزرسانی: ' + t;
+  if (srcEl) srcEl.textContent = '· ' + src;
+  if (dot) {
+    dot.style.background = ok ? '#06d6a0' : '#ef233c';
+    setTimeout(() => { dot.style.background = 'var(--accent-cyan)'; }, 800);
+  }
+}
+
+// ══════════════════════════════════════════
+// منابع داده — هر تابع یه Promise برمیگردونه
+// پروکسی CORS برای رفع مشکل cross-origin
+// ══════════════════════════════════════════
+
+// پروکسی‌های رایگان CORS — ترتیبی امتحان می‌شن
+const PROXIES = [
+  u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+  u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+  u => 'https://cors-anywhere.herokuapp.com/' + u,
+];
+
+async function fetchWithProxy(url) {
+  // اول بدون پروکسی امتحان می‌کنیم (برخی APIها CORS دارن)
+  const attempts = [url, ...PROXIES.map(p=>p(url))];
+  for(const u of attempts) {
+    try {
+      const r = await fetch(u, {cache:'no-store', signal: AbortSignal.timeout(6000)});
+      if(r.ok) return r.json();
+    } catch(e) { /* ادامه */ }
+  }
+  throw new Error('all proxies failed for ' + url);
+}
+
+// 1. نوبیتکس
+async function fromNobitex() {
+  const d = await fetchWithProxy('https://api.nobitex.ir/market/stats?srcCurrency=btc,eth,sol,avax,ada&dstCurrency=usdt');
+  const s = d.stats || {};
+  const map = {'btc-usdt':'bitcoin','eth-usdt':'ethereum','sol-usdt':'solana','avax-usdt':'avalanche','ada-usdt':'cardano'};
+  let count = 0;
+  Object.entries(map).forEach(([key,id]) => {
+    const v = s[key];
+    if(v && v.latest) { prices[id]=parseFloat(v.latest); changes[id]=parseFloat(v.dayChange)||0; count++; }
+  });
+  if(!count) throw new Error('nobitex empty');
+  return 'نوبیتکس';
+}
+
+// 2. والکس
+async function fromWallex() {
+  const d = await fetchWithProxy('https://api.wallex.ir/v1/markets');
+  const symbols = d?.result?.symbols || {};
+  const map = {'BTCUSDT':'bitcoin','ETHUSDT':'ethereum','SOLUSDT':'solana','AVAXUSDT':'avalanche','ADAUSDT':'cardano'};
+  let count = 0;
+  Object.entries(map).forEach(([sym,id]) => {
+    const m = symbols[sym];
+    if(m?.stats?.lastPrice) { prices[id]=parseFloat(m.stats.lastPrice); count++; }
+  });
+  if(!count) throw new Error('wallex empty');
+  return 'والکس';
+}
+
+// 3. بیت‌پین
+async function fromBitpin() {
+  const d = await fetchWithProxy('https://api.bitpin.org/v1/mkt/markets/');
+  const list = d?.results || d || [];
+  const map = {'BTC_USDT':'bitcoin','ETH_USDT':'ethereum','SOL_USDT':'solana','AVAX_USDT':'avalanche','ADA_USDT':'cardano'};
+  let count = 0;
+  (Array.isArray(list)?list:[]).forEach(m => {
+    const id = map[m.code];
+    if(id && m.price) { prices[id]=parseFloat(m.price); changes[id]=parseFloat(m.price_info?.change)||changes[id]; count++; }
+  });
+  if(!count) throw new Error('bitpin empty');
+  return 'بیت‌پین';
+}
+
+// 4. رمزینکس
+async function fromRamzinex() {
+  const d = await fetchWithProxy('https://publicapi.ramzinex.com/exchange/api/v1.0/exchange/pairs');
+  const pairs = d?.data || [];
+  const map = {'btcusdt':'bitcoin','ethusdt':'ethereum','solusdt':'solana','avaxusdt':'avalanche','adausdt':'cardano'};
+  let count = 0;
+  pairs.forEach(p => {
+    const key = (p?.financial?.name||'').toLowerCase().replace('/','');
+    const id = map[key];
+    if(id && p?.financial?.last_deal_price) { prices[id]=parseFloat(p.financial.last_deal_price); count++; }
+  });
+  if(!count) throw new Error('ramzinex empty');
+  return 'رمزینکس';
+}
+
+// 5. ابزار تتر
+async function fromAbantether() {
+  const d = await fetchWithProxy('https://abantether.com/api/v1/market/ticker');
+  const map = {'BTC':'bitcoin','ETH':'ethereum','SOL':'solana','AVAX':'avalanche','ADA':'cardano'};
+  let count = 0;
+  Object.entries(map).forEach(([sym,id]) => {
+    const v = d?.[sym+'USDT'] || d?.[sym];
+    if(v && v.last) { prices[id]=parseFloat(v.last); count++; }
+  });
+  if(!count) throw new Error('abantether empty');
+  return 'ابزارتتر';
+}
+
+// 6. فال‌بک — CoinGecko جهانی (بدون نیاز به پروکسی)
+async function fromCoinGecko() {
+  const r = await fetch(
+    'https://api.coingecko.com/api/v3/simple/price?ids='+IDS+'&vs_currencies=usd&include_24hr_change=true&t='+Date.now(),
+    {cache:'no-store', signal: AbortSignal.timeout(8000)}
+  );
+  if(!r.ok) throw new Error('coingecko '+r.status);
+  const d = await r.json();
+  let count = 0;
+  Object.keys(COINS).forEach(id => {
+    if(d[id]?.usd) { prices[id]=d[id].usd; changes[id]=d[id].usd_24h_change||0; count++; }
+  });
+  if(!count) throw new Error('coingecko empty');
+  return 'CoinGecko';
+}
+
+// ── موتور اصلی: امتحان ترتیبی منابع ──
+const SOURCES = [fromNobitex, fromWallex, fromBitpin, fromRamzinex, fromAbantether, fromCoinGecko];
+
+async function fetchPrices() {
+  for (const source of SOURCES) {
+    try {
+      const name = await Promise.race([
+        source(),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 7000))
+      ]);
+      updateTable();
+      updateTicker();
+      updateTradePanel();
+      updateStatus(name, true);
+      return; // موفق شد، خروج
+    } catch (e) {
+      console.warn(e.message);
+    }
+  }
+  // همه شکست خوردن
+  updateStatus('خطا', false);
+}
+
+// ── پنل معامله ──
+function setTab(mode) {
+  const buyTab  = document.getElementById('buyTab');
+  const sellTab = document.getElementById('sellTab');
+  const buyBtn  = document.getElementById('buyBtn');
+  const sellBtn = document.getElementById('sellBtn');
+  if (mode === 'buy') {
+    buyTab.classList.add('active');    sellTab.classList.remove('active');
+    buyBtn.classList.remove('hide');   sellBtn.classList.remove('show');
+  } else {
+    sellTab.classList.add('active');   buyTab.classList.remove('active');
+    sellBtn.classList.add('show');     buyBtn.classList.add('hide');
+  }
+}
+function calcOrder() { updateTradePanel(); }
+function setPct(pct) {
+  document.getElementById('amount').value = Math.round(2000 * pct / 100);
+  updateTradePanel();
+}
+function onCoinSelect(el) {
+  const map = {
+    '₿ Bitcoin — BTC':'bitcoin','Ξ Ethereum — ETH':'ethereum',
+    '◎ Solana — SOL':'solana','▲ Avalanche — AVAX':'avalanche'
+  };
+  selectedCoinId = map[el.value] || 'bitcoin';
+  updateTradePanel();
+}
+
+// ── انیمیشن بلاک‌ها ──
+setInterval(() => {
+  document.querySelectorAll('.block-box.confirmed').forEach(b => {
+    b.style.opacity = (Math.random() * 0.3 + 0.7).toFixed(2);
+  });
+}, 2000);
+
+// ── شروع ──
+updateTable();
+updateTicker();
+updateTradePanel();
+fetchPrices();
+setInterval(fetchPrices, 15000);
+</script>
+
+<!-- ══════════════ MODAL OVERLAY ══════════════ -->
+<div id="modalOverlay" style="display:none;position:fixed;inset:0;z-index:999;align-items:center;justify-content:center;">
+  <!-- blurred backdrop -->
+  <div onclick="closeModal()" style="position:absolute;inset:0;background:rgba(5,5,8,0.75);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);"></div>
+
+  <!-- REGISTER CARD -->
+  <div id="registerCard" class="modal-card" style="display:none;">
+    <div class="modal-shine"></div>
+
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="logo-icon">⬡</div>
+        <span style="font-weight:700;font-size:16px;">بردیا<span style="color:var(--accent-cyan)">.نت</span></span>
+      </div>
+      <button onclick="closeModal()" class="modal-close">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <h2 class="modal-title">ایجاد حساب کاربری</h2>
+      <p class="modal-sub">اطلاعات زیر را با دقت وارد کنید</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>نام</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" placeholder="نام خود را وارد کنید" id="reg-fname">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>نام خانوادگی</label>
+          <div class="input-wrap">
+            <span class="input-icon">👤</span>
+            <input type="text" placeholder="نام خانوادگی" id="reg-lname">
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>ایمیل</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="email" placeholder="example@email.com" id="reg-email" dir="ltr">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>شماره موبایل</label>
+          <div class="input-wrap">
+            <span class="input-icon">📱</span>
+            <input type="tel" placeholder="09xxxxxxxxx" id="reg-phone" dir="ltr">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>کد ملی</label>
+          <div class="input-wrap">
+            <span class="input-icon">🪪</span>
+            <input type="text" placeholder="10 رقم" id="reg-national" dir="ltr" maxlength="10">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>رمز عبور</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" placeholder="حداقل 8 کاراکتر" id="reg-pass">
+            <button onclick="togglePass('reg-pass',this)" class="eye-btn">👁</button>
+          </div>
+          <div class="pass-strength" id="passStrength"></div>
+        </div>
+        <div class="form-group">
+          <label>تکرار رمز عبور</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" placeholder="رمز را مجدداً وارد کنید" id="reg-pass2">
+            <button onclick="togglePass('reg-pass2',this)" class="eye-btn">👁</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="terms-row">
+        <input type="checkbox" id="terms">
+        <label for="terms" style="font-size:12px;color:var(--text-muted);cursor:pointer;">
+          با <span style="color:var(--accent-cyan);cursor:pointer;">قوانین و مقررات</span> بردیا.نت موافقم
+        </label>
+      </div>
+
+      <div id="reg-error" class="form-error" style="display:none;"></div>
+
+      <button class="modal-submit-btn" onclick="submitRegister()">
+        <span id="regBtnText">ایجاد حساب ←</span>
+      </button>
+
+      <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:16px;">
+        قبلاً ثبت‌نام کرده‌اید؟
+        <span style="color:var(--accent-cyan);cursor:pointer;" onclick="switchModal('login')">وارد شوید</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- LOGIN CARD -->
+  <div id="loginCard" class="modal-card" style="display:none;">
+    <div class="modal-shine"></div>
+
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="logo-icon">⬡</div>
+        <span style="font-weight:700;font-size:16px;">بردیا<span style="color:var(--accent-cyan)">.نت</span></span>
+      </div>
+      <button onclick="closeModal()" class="modal-close">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <h2 class="modal-title">ورود به حساب</h2>
+      <p class="modal-sub">خوش برگشتی! اطلاعات ورود را وارد کنید</p>
+
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>ایمیل یا شماره موبایل</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉️</span>
+            <input type="text" placeholder="ایمیل یا موبایل" id="login-user" dir="ltr">
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>رمز عبور</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" placeholder="رمز عبور" id="login-pass">
+            <button onclick="togglePass('login-pass',this)" class="eye-btn">👁</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:left;margin-bottom:20px;">
+        <span style="font-size:12px;color:var(--accent-cyan);cursor:pointer;" onclick="openRecoveryModal()">فراموشی رمز عبور؟</span>
+      </div>
+
+      <div id="login-error" class="form-error" style="display:none;"></div>
+
+      <button class="modal-submit-btn" onclick="submitLogin()">
+        <span id="loginBtnText">ورود به حساب ←</span>
+      </button>
+
+      <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:16px;">
+        هنوز ثبت‌نام نکرده‌اید؟
+        <span style="color:var(--accent-cyan);cursor:pointer;" onclick="switchModal('register')">ایجاد حساب</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- SUCCESS CARD -->
+  <div id="successCard" class="modal-card" style="display:none;text-align:center;padding:48px 32px;">
+    <div class="modal-shine"></div>
+    <div style="font-size:56px;margin-bottom:20px;">🎉</div>
+    <h2 style="font-size:22px;font-weight:700;margin-bottom:10px;">ثبت‌نام موفق!</h2>
+    <p style="color:var(--text-secondary);font-size:14px;line-height:1.7;margin-bottom:28px;">
+      حساب شما با موفقیت ایجاد شد.<br>اکنون می‌توانید وارد شوید و معاملات خود را شروع کنید.
+    </p>
+    <button class="modal-submit-btn" onclick="switchModal('login')">ورود به حساب ←</button>
+  </div>
+</div>
+
+<style>
+/* ── MODAL STYLES ── */
+.modal-card {
+  position: relative;
+  z-index: 1000;
+  background: rgba(12,12,20,0.85);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 24px;
+  width: 90%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06) inset;
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+@keyframes modalIn {
+  from { opacity:0; transform:translateY(30px) scale(0.95); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.modal-shine {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,245,212,0.5), transparent);
+  pointer-events: none;
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+}
+.modal-close {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: rgba(239,35,60,0.15); color: var(--accent-red); border-color: rgba(239,35,60,0.3); }
+.modal-body { padding: 20px 24px 28px; }
+.modal-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-icon {
+  position: absolute;
+  right: 12px;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 1;
+}
+.input-wrap input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 11px 38px 11px 40px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: 'Vazirmatn', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.input-wrap input:focus {
+  border-color: rgba(0,245,212,0.45);
+  background: rgba(0,245,212,0.04);
+}
+.input-wrap input::placeholder { color: rgba(255,255,255,0.25); }
+.eye-btn {
+  position: absolute;
+  left: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 4px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.eye-btn:hover { opacity: 1; }
+
+.pass-strength {
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 4px;
+  background: rgba(255,255,255,0.08);
+  overflow: hidden;
+}
+.pass-strength::after {
+  content: '';
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  width: var(--strength, 0%);
+  background: var(--strength-color, #ef233c);
+  transition: width 0.3s, background 0.3s;
+}
+
+.terms-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 18px; }
+.terms-row input[type=checkbox] { width:16px; height:16px; accent-color: var(--accent-cyan); margin-top:1px; flex-shrink:0; }
+
+.form-error {
+  background: rgba(239,35,60,0.1);
+  border: 1px solid rgba(239,35,60,0.25);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--accent-red);
+  margin-bottom: 14px;
+}
+
+.modal-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #4361ee, #7b2fff);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  font-family: 'Vazirmatn', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(67,97,238,0.35);
+  transition: all 0.2s;
+}
+.modal-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(67,97,238,0.5); }
+.modal-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+@media(max-width:520px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .modal-card { max-width: 98%; border-radius: 18px; }
+}
+
+/* ── GATEWAY SELECTION — LIQUID GLASS ── */
+.gw-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(3,3,8,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.gw-card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04) 40%, rgba(255,255,255,0.08)),
+    rgba(20,20,30,0.55);
+  border: 1px solid rgba(255,255,255,0.25);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.45),
+    inset 0 1px 1px rgba(255,255,255,0.35),
+    inset 0 -1px 12px rgba(255,255,255,0.05);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.gw-shine {
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  pointer-events: none;
+}
+.gw-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom: 22px; }
+.gw-title { font-size: 19px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
+.gw-sub { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+.gw-close {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  width: 32px; height: 32px;
+  display:flex; align-items:center; justify-content:center;
+  cursor: pointer;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.gw-close:hover { background: rgba(239,35,60,0.18); color: var(--accent-red); }
+
+.gw-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.gw-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-family: 'Vazirmatn', sans-serif;
+  transition: all 0.2s;
+}
+.gw-option:hover {
+  border-color: rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.10);
+  transform: translateY(-2px);
+}
+.gw-option.gw-selected {
+  border-color: rgba(0,245,212,0.55);
+  background: rgba(0,245,212,0.10);
+  box-shadow: 0 0 0 1px rgba(0,245,212,0.25), 0 8px 20px rgba(0,245,212,0.12);
+}
+.gw-icon {
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  border: 1px solid transparent;
+}
+.gw-name { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+.gw-check {
+  position: absolute;
+  top: 8px; left: 8px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  color: #04201c;
+  font-size: 10px;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all 0.2s;
+}
+.gw-option.gw-selected .gw-check { opacity: 1; transform: scale(1); }
+
+.gw-confirm-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(67,97,238,0.9), rgba(123,47,255,0.9));
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 14px;
+  color: white;
+  font-size: 15px;
+  font-family: 'Vazirmatn', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(67,97,238,0.35);
+  transition: all 0.2s;
+}
+.gw-confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.gw-confirm-btn:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(67,97,238,0.5); }
+
+@media(max-width:480px) {
+  .gw-grid { grid-template-columns: 1fr 1fr; }
+  .gw-card { padding: 22px; border-radius: 22px; }
+}
+
+</style>
+
+<script>
+function openModal(type) {
+  const overlay = document.getElementById('modalOverlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  showCard(type);
+}
+function closeModal() {
+  document.getElementById('modalOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function showCard(type) {
+  ['registerCard','loginCard','successCard'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  const map = { register:'registerCard', login:'loginCard', success:'successCard' };
+  const card = document.getElementById(map[type]);
+  if (card) {
+    card.style.display = 'block';
+    card.style.animation = 'none';
+    requestAnimationFrame(() => { card.style.animation = ''; });
+  }
+}
+function switchModal(type) { showCard(type); }
+
+function togglePass(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁'; }
+}
+
+// password strength
+document.addEventListener('input', e => {
+  if (e.target.id === 'reg-pass') {
+    const v = e.target.value;
+    const bar = document.getElementById('passStrength');
+    if (!bar) return;
+    let strength = 0;
+    if (v.length >= 8) strength++;
+    if (/[A-Z]/.test(v)) strength++;
+    if (/[0-9]/.test(v)) strength++;
+    if (/[^A-Za-z0-9]/.test(v)) strength++;
+    const colors = ['#ef233c','#fa9500','#4361ee','#06d6a0'];
+    const widths = ['25%','50%','75%','100%'];
+    bar.style.setProperty('--strength', v ? widths[strength-1]||'10%' : '0%');
+    bar.style.setProperty('--strength-color', v ? colors[strength-1]||'#ef233c' : '#ef233c');
+  }
+});
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function submitRegister() {
+  const fname    = document.getElementById('reg-fname').value.trim();
+  const lname    = document.getElementById('reg-lname').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const phone    = document.getElementById('reg-phone').value.trim();
+  const national = document.getElementById('reg-national').value.trim();
+  const pass     = document.getElementById('reg-pass').value;
+  const pass2    = document.getElementById('reg-pass2').value;
+  const terms    = document.getElementById('terms').checked;
+
+  if (!fname || !lname)              return showError('reg-error','❌ نام و نام خانوادگی الزامی است');
+  if (!email || !email.includes('@')) return showError('reg-error','❌ ایمیل معتبر وارد کنید');
+  if (!phone || phone.length < 11)   return showError('reg-error','❌ شماره موبایل معتبر وارد کنید');
+  if (!national || national.length !== 10 || isNaN(national)) return showError('reg-error','❌ کد ملی باید 10 رقم باشد');
+  if (pass.length < 8)               return showError('reg-error','❌ رمز عبور باید حداقل 8 کاراکتر باشد');
+  if (pass !== pass2)                return showError('reg-error','❌ تکرار رمز عبور مطابقت ندارد');
+  if (!terms)                        return showError('reg-error','❌ قوانین و مقررات را تأیید کنید');
+
+  const btn = document.querySelector('#registerCard .modal-submit-btn');
+  btn.disabled = true;
+  document.getElementById('regBtnText').textContent = '⏳ در حال ثبت‌نام...';
+
+  // simulate API call
+  setTimeout(() => {
+    btn.disabled = false;
+    document.getElementById('regBtnText').textContent = 'ایجاد حساب ←';
+    isLoggedIn = true;
+    showCard('success');
+  }, 1800);
+}
+
+function submitLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!user) return showError('login-error','❌ ایمیل یا شماره موبایل را وارد کنید');
+  if (!pass) return showError('login-error','❌ رمز عبور را وارد کنید');
+
+  const btn = document.querySelector('#loginCard .modal-submit-btn');
+  btn.disabled = true;
+  document.getElementById('loginBtnText').textContent = '⏳ در حال ورود...';
+
+  setTimeout(() => {
+    btn.disabled = false;
+    document.getElementById('loginBtnText').textContent = 'ورود به حساب ←';
+    showError('login-error','⚠️ در نسخه دمو اتصال به سرور فعال نیست');
+  }, 1500);
+}
+
+// close on Escape
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+// ── THEME TOGGLE ──
+function applyTheme(theme) {
+  if (theme === 'light') {
+    document.documentElement.classList.add('theme-light');
+    document.getElementById('themeToggleBtn').textContent = '☀️';
+  } else {
+    document.documentElement.classList.remove('theme-light');
+    document.getElementById('themeToggleBtn').textContent = '🌙';
+  }
+  localStorage.setItem('siteTheme', theme);
+}
+function toggleTheme() {
+  const isLight = document.documentElement.classList.contains('theme-light');
+  applyTheme(isLight ? 'dark' : 'light');
+}
+(function initTheme(){
+  const saved = localStorage.getItem('siteTheme') || 'dark';
+  applyTheme(saved);
+})();
+
+// ── LOGIN STATE (demo) ──
+let isLoggedIn = false;
+
+function handleBuyClick() {
+  if (!isLoggedIn) {
+    openModal('login');
+    return;
+  }
+  openGatewayModal();
+}
+
+// ── PAYMENT GATEWAY SELECTION (liquid glass) ──
+const GATEWAYS = [
+  { id:'zarinpal',  name:'زرین‌پال',  icon:'💳', color:'#f9c116' },
+  { id:'idpay',     name:'آیدی‌پی',   icon:'🏦', color:'#00b4d8' },
+  { id:'nextpay',   name:'نکست‌پی',   icon:'⚡', color:'#7b2fff' },
+  { id:'zibal',     name:'زیبال',     icon:'🔷', color:'#06d6a0' },
+  { id:'payping',   name:'پی‌پینگ',   icon:'🔔', color:'#ef476f' },
+  { id:'sepehr',    name:'درگاه بانک صادرات (سپهر)', icon:'🏛️', color:'#118ab2' },
+];
+
+function openGatewayModal() {
+  let overlay = document.getElementById('gatewayOverlay');
+  if (!overlay) buildGatewayModal();
+  document.getElementById('gatewayOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeGatewayModal() {
+  const overlay = document.getElementById('gatewayOverlay');
+  if (overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+}
+function selectGateway(id) {
+  const gw = GATEWAYS.find(g => g.id === id);
+  document.querySelectorAll('.gw-option').forEach(el => el.classList.remove('gw-selected'));
+  const chosen = document.querySelector('.gw-option[data-id="' + id + '"]');
+  if (chosen) chosen.classList.add('gw-selected');
+  const btn = document.getElementById('gwConfirmBtn');
+  if (btn) { btn.disabled = false; btn.dataset.selected = id; }
+}
+function confirmGateway() {
+  const btn = document.getElementById('gwConfirmBtn');
+  const id = btn ? btn.dataset.selected : null;
+  if (!id) return;
+  const gw = GATEWAYS.find(g => g.id === id);
+  alert('در نسخه دمو، اتصال واقعی به درگاه «' + gw.name + '» فعال نیست.');
+  closeGatewayModal();
+}
+
+function buildGatewayModal() {
+  const overlay = document.createElement('div');
+  overlay.id = 'gatewayOverlay';
+  overlay.className = 'gw-overlay';
+  overlay.innerHTML = `
+    <div class="gw-card">
+      <div class="gw-shine"></div>
+      <div class="gw-header">
+        <div>
+          <div class="gw-title">انتخاب درگاه پرداخت</div>
+          <div class="gw-sub">یکی از درگاه‌های بانکی ایرانی را انتخاب کنید</div>
+        </div>
+        <button class="gw-close" onclick="closeGatewayModal()">✕</button>
+      </div>
+      <div class="gw-grid">
+        ${GATEWAYS.map(g => `
+          <button class="gw-option" data-id="${g.id}" onclick="selectGateway('${g.id}')">
+            <span class="gw-icon" style="background:${g.color}22;border-color:${g.color}44;">${g.icon}</span>
+            <span class="gw-name">${g.name}</span>
+            <span class="gw-check">✓</span>
+          </button>
+        `).join('')}
+      </div>
+      <button class="gw-confirm-btn" id="gwConfirmBtn" disabled onclick="confirmGateway()">تأیید و ادامه ←</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeGatewayModal(); });
+}
+
+// ── PASSWORD RECOVERY VIA EMAIL (REAL CODE SENT BY BACKEND) — LIQUID GLASS ──
+
+// آدرس سرور بک‌اندی که کد واقعی ایمیل می‌فرستد (فایل backend/server.js)
+// وقتی سرور را اجرا کردی و/یا روی هاست واقعی گذاشتی، این آدرس را تغییر بده
+const RECOVERY_API_BASE = 'http://localhost:4000';
+
+let recoveryState = { email: '', code: '' };
+
+function openRecoveryModal() {
+  closeModal();
+  let overlay = document.getElementById('recoveryOverlay');
+  if (!overlay) buildRecoveryModal();
+  document.getElementById('recoveryOverlay').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  showRecoveryStep('email');
+}
+function closeRecoveryModal() {
+  const overlay = document.getElementById('recoveryOverlay');
+  if (overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+}
+function showRecoveryStep(step) {
+  ['recStepEmail','recStepCode','recStepReset'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  const map = { email:'recStepEmail', code:'recStepCode', reset:'recStepReset' };
+  const el = document.getElementById(map[step]);
+  if (el) el.style.display = 'block';
+}
+
+async function sendRecoveryEmail() {
+  const input = document.getElementById('rec-gmail');
+  const err = document.getElementById('rec-error');
+  const val = input.value.trim();
+  err.style.display = 'none';
+  if (!val || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+    err.textContent = '❌ لطفاً یک آدرس ایمیل معتبر وارد کنید';
+    err.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('recSendBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ در حال ارسال...';
+
+  try {
+    const res = await fetch(RECOVERY_API_BASE + '/api/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: val }),
+    });
+    const data = await res.json();
+    btn.disabled = false;
+    btn.textContent = 'ارسال کد بازیابی ←';
+
+    if (!res.ok || !data.ok) {
+      err.textContent = '❌ ' + (data.message || 'خطا در ارسال ایمیل');
+      err.style.display = 'block';
+      return;
+    }
+
+    recoveryState.email = val;
+    document.getElementById('recSentEmail').textContent = val;
+    showRecoveryStep('code');
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'ارسال کد بازیابی ←';
+    err.textContent = '❌ اتصال به سرور بازیابی برقرار نشد. مطمئن شو سرور backend در حال اجراست.';
+    err.style.display = 'block';
+  }
+}
+
+async function verifyRecoveryCode() {
+  const codeInput = document.getElementById('rec-code');
+  const err = document.getElementById('rec-code-error');
+  const code = codeInput.value.trim();
+  err.style.display = 'none';
+
+  if (!code || code.length !== 6) {
+    err.textContent = '❌ کد ۶ رقمی را کامل وارد کنید';
+    err.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('recVerifyBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ در حال بررسی...';
+
+  try {
+    const res = await fetch(RECOVERY_API_BASE + '/api/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: recoveryState.email, code }),
+    });
+    const data = await res.json();
+    btn.disabled = false;
+    btn.textContent = 'تایید کد ←';
+
+    if (!res.ok || !data.ok) {
+      err.textContent = '❌ ' + (data.message || 'کد اشتباه است');
+      err.style.display = 'block';
+      return;
+    }
+
+    recoveryState.code = code;
+    showRecoveryStep('reset');
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'تایید کد ←';
+    err.textContent = '❌ اتصال به سرور برقرار نشد';
+    err.style.display = 'block';
+  }
+}
+
+async function submitNewPassword() {
+  const p1 = document.getElementById('rec-newpass').value;
+  const p2 = document.getElementById('rec-newpass2').value;
+  const err = document.getElementById('rec-reset-error');
+  err.style.display = 'none';
+  if (p1.length < 8) { err.textContent = '❌ رمز عبور باید حداقل ۸ کاراکتر باشد'; err.style.display = 'block'; return; }
+  if (p1 !== p2) { err.textContent = '❌ تکرار رمز عبور مطابقت ندارد'; err.style.display = 'block'; return; }
+
+  const btn = document.getElementById('recResetBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ در حال ذخیره...';
+
+  try {
+    const res = await fetch(RECOVERY_API_BASE + '/api/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: recoveryState.email, code: recoveryState.code, newPassword: p1 }),
+    });
+    const data = await res.json();
+    btn.disabled = false;
+    btn.textContent = 'ذخیره رمز عبور جدید ←';
+
+    if (!res.ok || !data.ok) {
+      err.textContent = '❌ ' + (data.message || 'خطا در تغییر رمز عبور');
+      err.style.display = 'block';
+      return;
+    }
+
+    closeRecoveryModal();
+    openModal('login');
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'ذخیره رمز عبور جدید ←';
+    err.textContent = '❌ اتصال به سرور برقرار نشد';
+    err.style.display = 'block';
+  }
+}
+
+function buildRecoveryModal() {
+  const overlay = document.createElement('div');
+  overlay.id = 'recoveryOverlay';
+  overlay.className = 'gw-overlay';
+  overlay.innerHTML = `
+    <div class="gw-card" style="max-width:440px;">
+      <div class="gw-shine"></div>
+      <div class="gw-header">
+        <div>
+          <div class="gw-title">بازیابی رمز عبور</div>
+          <div class="gw-sub">با کد ارسالی به ایمیل، رمز عبور را بازیابی کنید</div>
+        </div>
+        <button class="gw-close" onclick="closeRecoveryModal()">✕</button>
+      </div>
+
+      <div id="recStepEmail">
+        <div class="form-group full" style="margin-bottom:14px;">
+          <label style="font-size:12px;color:var(--text-muted);font-weight:500;">آدرس ایمیل</label>
+          <div class="input-wrap" style="margin-top:6px;">
+            <span class="input-icon">📧</span>
+            <input type="email" placeholder="name@gmail.com" id="rec-gmail" dir="ltr" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.16);">
+          </div>
+        </div>
+        <div id="rec-error" class="form-error" style="display:none;"></div>
+        <button class="gw-confirm-btn" id="recSendBtn" onclick="sendRecoveryEmail()">ارسال کد بازیابی ←</button>
+      </div>
+
+      <div id="recStepCode" style="display:none;">
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.8;margin-bottom:6px;">یک کد ۶ رقمی به آدرس</p>
+        <p id="recSentEmail" style="font-size:14px;font-weight:700;color:var(--accent-cyan);direction:ltr;margin-bottom:14px;"></p>
+        <div class="form-group full" style="margin-bottom:14px;">
+          <label style="font-size:12px;color:var(--text-muted);font-weight:500;">کد ۶ رقمی</label>
+          <div class="input-wrap" style="margin-top:6px;">
+            <span class="input-icon">🔢</span>
+            <input type="text" maxlength="6" inputmode="numeric" placeholder="------" id="rec-code" dir="ltr" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.16);letter-spacing:6px;text-align:center;">
+          </div>
+        </div>
+        <div id="rec-code-error" class="form-error" style="display:none;"></div>
+        <button class="gw-confirm-btn" id="recVerifyBtn" onclick="verifyRecoveryCode()" style="margin-bottom:10px;">تایید کد ←</button>
+        <p style="font-size:11px;color:var(--text-muted);text-align:center;">کد نرسید؟ <span style="color:var(--accent-cyan);cursor:pointer;" onclick="showRecoveryStep('email')">دوباره تلاش کنید</span></p>
+      </div>
+
+      <div id="recStepReset" style="display:none;">
+        <div class="form-group full" style="margin-bottom:14px;">
+          <label style="font-size:12px;color:var(--text-muted);font-weight:500;">رمز عبور جدید</label>
+          <div class="input-wrap" style="margin-top:6px;">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="rec-newpass" placeholder="رمز عبور جدید" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.16);">
+          </div>
+        </div>
+        <div class="form-group full" style="margin-bottom:14px;">
+          <label style="font-size:12px;color:var(--text-muted);font-weight:500;">تکرار رمز عبور جدید</label>
+          <div class="input-wrap" style="margin-top:6px;">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="rec-newpass2" placeholder="تکرار رمز عبور جدید" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.16);">
+          </div>
+        </div>
+        <div id="rec-reset-error" class="form-error" style="display:none;"></div>
+        <button class="gw-confirm-btn" id="recResetBtn" onclick="submitNewPassword()">ذخیره رمز عبور جدید ←</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeRecoveryModal(); });
+}
+
+
+
+
+</script>
+
+<!-- ══════════════ MARKET PAGE OVERLAY ══════════════ -->
+<div id="marketPage" style="display:none;position:fixed;inset:0;z-index:990;overflow-y:auto;">
+  <!-- bg -->
+  <div style="position:fixed;inset:0;background:rgba(5,5,8,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:-1;"></div>
+
+  <div style="max-width:1100px;margin:0 auto;padding:24px 20px 60px;">
+    <!-- header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;">
+      <div>
+        <h2 style="font-size:24px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px;">بازار ارزهای دیجیتال</h2>
+        <p style="font-size:13px;color:var(--text-muted);">قیمت لحظه‌ای به ریال و دلار · آپدیت هر ۱۵ ثانیه</p>
+      </div>
+      <button onclick="closeMarketPage()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:var(--text-secondary);padding:10px 20px;font-family:'Vazirmatn',sans-serif;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">← بازگشت</button>
+    </div>
+
+    <!-- search + filter -->
+    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+      <div style="position:relative;flex:1;min-width:200px;">
+        <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;">🔍</span>
+        <input id="marketSearch" oninput="filterMarket()" type="text" placeholder="جستجوی ارز..." style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:11px 40px 11px 14px;color:var(--text-primary);font-family:'Vazirmatn',sans-serif;font-size:14px;outline:none;">
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="sortMarket('name')"  id="sort-name"  class="sort-btn active-sort">نام</button>
+        <button onclick="sortMarket('price')" id="sort-price" class="sort-btn">قیمت</button>
+        <button onclick="sortMarket('change')" id="sort-change" class="sort-btn">تغییر ۲۴h</button>
+      </div>
+    </div>
+
+    <!-- stats bar -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">دلار/ریال</div>
+        <div style="font-size:16px;font-weight:700;color:var(--accent-cyan);" id="usdIrrRate">۶۱,۵۰۰</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">تعداد ارزها</div>
+        <div style="font-size:16px;font-weight:700;" id="coinCount">۵۰+</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">بیشترین رشد</div>
+        <div style="font-size:16px;font-weight:700;color:var(--accent-green);" id="topGainer">—</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">بیشترین افت</div>
+        <div style="font-size:16px;font-weight:700;color:var(--accent-red);" id="topLoser">—</div>
+      </div>
+    </div>
+
+    <!-- table card -->
+    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.09);border-radius:20px;overflow:hidden;position:relative;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,245,212,0.3),transparent);pointer-events:none;"></div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:700px;">
+          <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.07);">
+              <th style="padding:14px 20px;text-align:right;font-size:11px;color:var(--text-muted);font-weight:500;text-transform:uppercase;">#</th>
+              <th style="padding:14px 12px;text-align:right;font-size:11px;color:var(--text-muted);font-weight:500;">ارز</th>
+              <th style="padding:14px 12px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">قیمت (دلار)</th>
+              <th style="padding:14px 12px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">قیمت (ریال)</th>
+              <th style="padding:14px 12px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">تغییر ۲۴h</th>
+              <th style="padding:14px 12px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">بالاترین ۲۴h</th>
+              <th style="padding:14px 12px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">پایین‌ترین ۲۴h</th>
+              <th style="padding:14px 20px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">حجم</th>
+            </tr>
+          </thead>
+          <tbody id="marketTableBody">
+            <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);">⏳ در حال بارگذاری قیمت‌ها...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:16px;">داده‌ها از CoinGecko · نرخ دلار تقریبی است</p>
+  </div>
+</div>
+
+<style>
+.sort-btn {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: var(--text-muted);
+  padding: 10px 16px;
+  font-family: 'Vazirmatn', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.sort-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.09); }
+.sort-btn.active-sort {
+  background: rgba(0,245,212,0.1);
+  border-color: rgba(0,245,212,0.3);
+  color: var(--accent-cyan);
+}
+#marketSearch:focus { border-color: rgba(0,245,212,0.4); }
+</style>
+
+<script>
+// ── MARKET PAGE ──
+const USD_IRR = 615000; // 1 USD = 615,000 Rial (approx)
+let allCoins = [];
+let sortKey = 'name';
+let sortDir = 1;
+
+const COIN_ICONS = {
+  bitcoin:'₿',ethereum:'Ξ',solana:'◎',avalanche:'▲',cardano:'●',
+  binancecoin:'⬡',ripple:'✕',polkadot:'●',dogecoin:'Ð',shiba:'🐕',
+  'matic-network':'⬡',chainlink:'🔗',litecoin:'Ł',stellar:'✦',
+  tron:'T',cosmos:'⚛',uniswap:'🦄',aave:'👻',maker:'Μ',
+  compound:'C',yearn:'Y',sushiswap:'🍣',curve:'C',balancer:'B',
+};
+
+function openMarketPage() {
+  document.getElementById('marketPage').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  if (allCoins.length === 0) fetchMarketData();
+}
+function closeMarketPage() {
+  document.getElementById('marketPage').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function fetchMarketData() {
+  const tbody = document.getElementById('marketTableBody');
+  try {
+    const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=24h&t=' + Date.now();
+    const res = await fetch(url, {cache:'no-store'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    allCoins = await res.json();
+    renderMarket();
+    updateMarketStats();
+  } catch(e) {
+    // fallback: use existing prices from main engine
+    allCoins = Object.entries(COINS).map(([id,c],i) => ({
+      id, name: id, symbol: c.sym,
+      current_price: prices[id]||0,
+      price_change_percentage_24h: changes[id]||0,
+      high_24h: (prices[id]||0)*1.05,
+      low_24h:  (prices[id]||0)*0.95,
+      total_volume: 0, market_cap_rank: i+1
+    }));
+    renderMarket();
+  }
+}
+
+function fmtUSD(p) {
+  if (!p) return '$0';
+  if (p >= 1000) return '$' + p.toLocaleString('en',{maximumFractionDigits:0});
+  if (p >= 1)    return '$' + p.toFixed(3);
+  if (p >= 0.01) return '$' + p.toFixed(5);
+  return '$' + p.toFixed(8);
+}
+function fmtIRR(p) {
+  const r = p * USD_IRR;
+  if (r >= 1e12) return (r/1e12).toFixed(1) + ' هزار میلیارد';
+  if (r >= 1e9)  return (r/1e9).toFixed(0)  + ' میلیارد';
+  if (r >= 1e6)  return (r/1e6).toFixed(0)  + ' میلیون';
+  if (r >= 1000) return r.toLocaleString('en',{maximumFractionDigits:0});
+  return r.toFixed(1);
+}
+function fmtVol(v) {
+  if (!v) return '—';
+  if (v >= 1e9) return '$' + (v/1e9).toFixed(1) + 'B';
+  if (v >= 1e6) return '$' + (v/1e6).toFixed(0) + 'M';
+  return '$' + v.toLocaleString('en',{maximumFractionDigits:0});
+}
+
+function renderMarket() {
+  const search = (document.getElementById('marketSearch')?.value||'').toLowerCase();
+  let list = allCoins.filter(c =>
+    c.name.toLowerCase().includes(search) ||
+    c.symbol.toLowerCase().includes(search)
+  );
+
+  list.sort((a,b) => {
+    let av, bv;
+    if (sortKey==='name')   { av=a.name; bv=b.name; return sortDir*(av>bv?1:-1); }
+    if (sortKey==='price')  { av=a.current_price||0; bv=b.current_price||0; }
+    if (sortKey==='change') { av=a.price_change_percentage_24h||0; bv=b.price_change_percentage_24h||0; }
+    return sortDir*(bv-av);
+  });
+
+  const tbody = document.getElementById('marketTableBody');
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);">نتیجه‌ای یافت نشد</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list.map((c,i) => {
+    const ch   = c.price_change_percentage_24h || 0;
+    const icon = COIN_ICONS[c.id] || c.symbol?.charAt(0)?.toUpperCase() || '●';
+    const clr  = ch >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+    const arr  = ch >= 0 ? '▲' : '▼';
+    const h24  = c.high_24h  ? fmtUSD(c.high_24h)  : '—';
+    const l24  = c.low_24h   ? fmtUSD(c.low_24h)   : '—';
+
+    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s;"
+      onmouseover="this.style.background='rgba(255,255,255,0.03)'"
+      onmouseout="this.style.background=''"
+    >
+      <td style="padding:14px 20px;font-size:12px;color:var(--text-muted);">${c.market_cap_rank||i+1}</td>
+      <td style="padding:14px 12px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">${icon}</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;">${c.name}</div>
+            <div style="font-size:11px;color:var(--text-muted);">${c.symbol?.toUpperCase()}</div>
+          </div>
+        </div>
+      </td>
+      <td style="padding:14px 12px;text-align:left;font-size:13px;font-weight:600;">${fmtUSD(c.current_price)}</td>
+      <td style="padding:14px 12px;text-align:left;font-size:12px;color:var(--accent-cyan);">${fmtIRR(c.current_price)} ریال</td>
+      <td style="padding:14px 12px;text-align:left;font-size:13px;font-weight:600;color:${clr};">${arr} ${Math.abs(ch).toFixed(2)}٪</td>
+      <td style="padding:14px 12px;text-align:left;font-size:12px;color:var(--accent-green);">${h24}</td>
+      <td style="padding:14px 12px;text-align:left;font-size:12px;color:var(--accent-red);">${l24}</td>
+      <td style="padding:14px 20px;text-align:left;font-size:12px;color:var(--text-secondary);">${fmtVol(c.total_volume)}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('coinCount').textContent = list.length + '+';
+}
+
+function updateMarketStats() {
+  if (!allCoins.length) return;
+  const sorted = [...allCoins].sort((a,b)=>(b.price_change_percentage_24h||0)-(a.price_change_percentage_24h||0));
+  const top = sorted[0];
+  const bot = sorted[sorted.length-1];
+  if (top) document.getElementById('topGainer').textContent = top.symbol?.toUpperCase() + ' +' + (top.price_change_percentage_24h||0).toFixed(1) + '٪';
+  if (bot) document.getElementById('topLoser').textContent  = bot.symbol?.toUpperCase() + ' ' + (bot.price_change_percentage_24h||0).toFixed(1) + '٪';
+  document.getElementById('usdIrrRate').textContent = USD_IRR.toLocaleString('en');
+}
+
+function filterMarket() { renderMarket(); }
+
+function sortMarket(key) {
+  if (sortKey === key) { sortDir *= -1; }
+  else { sortKey = key; sortDir = 1; }
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active-sort'));
+  document.getElementById('sort-' + key)?.classList.add('active-sort');
+  renderMarket();
+}
+
+// refresh market data every 15s if page is open
+setInterval(() => {
+  if (document.getElementById('marketPage')?.style.display !== 'none') fetchMarketData();
+}, 15000);
+
+// close on Escape (extend existing listener)
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeMarketPage();
+  }
+});
+</script>
+
+<!-- ══════════════ PAGE OVERLAY SYSTEM ══════════════ -->
+<div id="pageOverlay" style="display:none;position:fixed;inset:0;z-index:980;overflow-y:auto;background:rgba(5,5,8,0.95);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);">
+  <div id="pageContent" style="min-height:100vh;"></div>
+</div>
+
+<style>
+/* shared page styles */
+.page-header-bar {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 2rem 0;max-width:1100px;margin:0 auto 28px;
+}
+.page-back-btn {
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px;color:var(--text-secondary);padding:10px 20px;
+  font-family:'Vazirmatn',sans-serif;font-size:13px;cursor:pointer;
+  display:flex;align-items:center;gap:8px;transition:all 0.2s;
+}
+.page-back-btn:hover{background:rgba(255,255,255,0.1);}
+.page-container{max-width:1100px;margin:0 auto;padding:0 2rem 80px;}
+.g-card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:18px;overflow:hidden;position:relative;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.g-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);pointer-events:none;}
+.g-card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px 16px;border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.g-card-title{font-size:15px;font-weight:600;}
+.g-card-body{padding:20px 22px;}
+.page-title{font-size:24px;font-weight:700;letter-spacing:-0.5px;}
+.page-sub{font-size:13px;color:var(--text-muted);margin-top:4px;}
+.action-btn{
+  padding:11px 22px;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:600;
+  transition:all 0.2s;
+}
+.action-btn-primary{
+  background:linear-gradient(135deg,#4361ee,#7b2fff);color:#fff;
+  box-shadow:0 4px 18px rgba(67,97,238,0.3);
+}
+.action-btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(67,97,238,0.45);}
+.action-btn-green{
+  background:linear-gradient(135deg,#06d6a0,#00b4a0);color:#001a15;
+  box-shadow:0 4px 18px rgba(6,214,160,0.25);
+}
+.action-btn-green:hover{transform:translateY(-2px);}
+.action-btn-red{
+  background:linear-gradient(135deg,#ef233c,#c1121f);color:#fff;
+  box-shadow:0 4px 18px rgba(239,35,60,0.25);
+}
+.action-btn-red:hover{transform:translateY(-2px);}
+.action-btn-ghost{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);
+  color:var(--text-secondary);
+}
+.action-btn-ghost:hover{background:rgba(255,255,255,0.09);color:var(--text-primary);}
+.p-input{
+  width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px;padding:12px 14px;color:var(--text-primary);
+  font-size:14px;font-family:'Vazirmatn',sans-serif;outline:none;transition:border-color 0.2s;
+}
+.p-input:focus{border-color:rgba(0,245,212,0.4);}
+.p-label{font-size:11px;color:var(--text-muted);font-weight:500;margin-bottom:6px;display:block;}
+</style>
+
+<script>
+// ── PAGE ROUTER ──
+let currentPage = 'market';
+
+function showPage(page) {
+  currentPage = page;
+  // update nav highlight
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+
+  if (page === 'market') {
+    document.getElementById('pageOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+    return;
+  }
+  const overlay = document.getElementById('pageOverlay');
+  overlay.style.display = 'block';
+  overlay.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+
+  const renderers = {
+    trade:      renderTradePage,
+    blockchain: renderBlockchainPage,
+    wallet:     renderWalletPage,
+    support:    renderSupportPage,
+  };
+  if (renderers[page]) renderers[page]();
+}
+
+function closePage() {
+  document.getElementById('pageOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('nav-market')?.classList.add('active');
+  currentPage = 'market';
+}
+
+function setPageContent(html) {
+  document.getElementById('pageContent').innerHTML = html;
+}
+
+// ══════════════════════════════
+// 1. TRADE PAGE
+// ══════════════════════════════
+function renderTradePage() {
+  const pBTC  = prices?.bitcoin    || 67420;
+  const pETH  = prices?.ethereum   || 3581;
+  const pSOL  = prices?.solana     || 178;
+  const pAVAX = prices?.avalanche  || 38.9;
+  const pADA  = prices?.cardano    || 0.48;
+  const USD_IRR = 615000;
+
+  setPageContent(`
+  <div class="page-header-bar">
+    <div><div class="page-title">معامله حرفه‌ای</div><div class="page-sub">خرید و فروش آنی ارزهای دیجیتال</div></div>
+    <button class="page-back-btn" onclick="closePage()">← بازگشت</button>
+  </div>
+  <div class="page-container">
+
+    <!-- pair selector -->
+    <div class="g-card" style="margin-bottom:20px;">
+      <div class="g-card-body" style="display:flex;gap:10px;flex-wrap:wrap;padding:16px 22px;">
+        ${[
+          {id:'bitcoin',sym:'BTC',icon:'₿',color:'#f7931a',p:pBTC},
+          {id:'ethereum',sym:'ETH',icon:'Ξ',color:'#627eea',p:pETH},
+          {id:'solana',sym:'SOL',icon:'◎',color:'#14f195',p:pSOL},
+          {id:'avalanche',sym:'AVAX',icon:'▲',color:'#00d1f0',p:pAVAX},
+          {id:'cardano',sym:'ADA',icon:'●',color:'#ef233c',p:pADA},
+        ].map((c,i) => `
+          <button onclick="selectTradePair('${c.id}','${c.sym}','${c.icon}',${c.p})" id="pair-${c.id}"
+            style="display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid ${i===0?'rgba(0,245,212,0.4)':'rgba(255,255,255,0.1)'};background:${i===0?'rgba(0,245,212,0.08)':'rgba(255,255,255,0.04)'};cursor:pointer;transition:all 0.2s;color:var(--text-primary);font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:600;">
+            <span style="color:${c.color};">${c.icon}</span> ${c.sym}/USDT
+          </button>`).join('')}
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:20px;">
+
+      <!-- left: chart placeholder + orderbook -->
+      <div style="display:flex;flex-direction:column;gap:20px;">
+
+        <!-- price header -->
+        <div class="g-card">
+          <div class="g-card-body" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div id="tp-icon" style="width:44px;height:44px;border-radius:50%;background:rgba(247,147,26,0.15);display:flex;align-items:center;justify-content:center;font-size:20px;color:#f7931a;">₿</div>
+              <div>
+                <div id="tp-name" style="font-size:18px;font-weight:700;">Bitcoin / USDT</div>
+                <div style="font-size:12px;color:var(--text-muted);">BTC · بیت‌کوین</div>
+              </div>
+            </div>
+            <div style="text-align:left;">
+              <div id="tp-price" style="font-size:28px;font-weight:700;letter-spacing:-1px;">$${pBTC.toLocaleString('en',{maximumFractionDigits:0})}</div>
+              <div id="tp-change" style="font-size:13px;color:var(--accent-green);">▲ ${Math.abs(changes?.bitcoin||2.3).toFixed(2)}٪ امروز</div>
+            </div>
+            <div style="display:flex;gap:20px;flex-wrap:wrap;">
+              <div style="text-align:center;"><div style="font-size:11px;color:var(--text-muted);">بالاترین ۲۴h</div><div style="font-size:14px;font-weight:600;color:var(--accent-green);" id="tp-high">$${(pBTC*1.03).toLocaleString('en',{maximumFractionDigits:0})}</div></div>
+              <div style="text-align:center;"><div style="font-size:11px;color:var(--text-muted);">پایین‌ترین ۲۴h</div><div style="font-size:14px;font-weight:600;color:var(--accent-red);" id="tp-low">$${(pBTC*0.97).toLocaleString('en',{maximumFractionDigits:0})}</div></div>
+              <div style="text-align:center;"><div style="font-size:11px;color:var(--text-muted);">معادل ریالی</div><div style="font-size:14px;font-weight:600;color:var(--accent-cyan);" id="tp-irr">${(pBTC*USD_IRR/1e9).toFixed(0)} میلیارد</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- mini chart (animated) -->
+        <div class="g-card">
+          <div class="g-card-header"><span class="g-card-title">نمودار قیمت</span>
+            <div style="display:flex;gap:6px;">
+              ${['۱h','۴h','۱d','۱w'].map((t,i)=>`<button onclick="setChartTime(this,'${t}')" style="padding:5px 12px;border-radius:6px;border:1px solid ${i===2?'rgba(0,245,212,0.4)':'rgba(255,255,255,0.1)'};background:${i===2?'rgba(0,245,212,0.1)':'transparent'};color:${i===2?'var(--accent-cyan)':'var(--text-muted)'};font-family:'Vazirmatn',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;">${t}</button>`).join('')}
+            </div>
+          </div>
+          <div class="g-card-body" style="padding:0;">
+            <canvas id="tradeChart" height="200" style="width:100%;display:block;"></canvas>
+          </div>
+        </div>
+
+        <!-- order book -->
+        <div class="g-card">
+          <div class="g-card-header"><span class="g-card-title">دفتر سفارشات</span><span style="font-size:12px;color:var(--accent-cyan);">● زنده</span></div>
+          <div class="g-card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;padding-top:0;">
+            <div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;font-size:11px;color:var(--text-muted);padding:10px 0 6px;border-bottom:1px solid rgba(255,255,255,0.06);">
+                <span>قیمت (USDT)</span><span style="text-align:left;">مقدار</span>
+              </div>
+              <div id="ob-asks"></div>
+            </div>
+            <div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;font-size:11px;color:var(--text-muted);padding:10px 0 6px;border-bottom:1px solid rgba(255,255,255,0.06);">
+                <span>قیمت (USDT)</span><span style="text-align:left;">مقدار</span>
+              </div>
+              <div id="ob-bids"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- right: trade form -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="g-card">
+          <div style="display:grid;grid-template-columns:1fr 1fr;">
+            <button id="trade-buy-tab" onclick="setTradeTab('buy')" style="padding:15px;border:none;background:rgba(6,214,160,0.1);color:var(--accent-green);font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border-bottom:2px solid var(--accent-green);">خرید</button>
+            <button id="trade-sell-tab" onclick="setTradeTab('sell')" style="padding:15px;border:none;background:transparent;color:var(--text-muted);font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;">فروش</button>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+
+            <!-- order type -->
+            <div style="display:flex;gap:6px;">
+              ${['بازار','محدود','حد ضرر'].map((t,i)=>`
+              <button onclick="setOrderType(this,'${t}')" style="flex:1;padding:8px;border-radius:8px;border:1px solid ${i===0?'rgba(0,245,212,0.35)':'rgba(255,255,255,0.1)'};background:${i===0?'rgba(0,245,212,0.07)':'transparent'};color:${i===0?'var(--accent-cyan)':'var(--text-muted)'};font-family:'Vazirmatn',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;">${t}</button>`).join('')}
+            </div>
+
+            <div>
+              <label class="p-label">قیمت (USDT)</label>
+              <div style="position:relative;">
+                <input class="p-input" id="trade-price-input" value="${pBTC.toLocaleString('en',{maximumFractionDigits:0})}" type="number" style="padding-left:60px;">
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-muted);">USDT</span>
+              </div>
+            </div>
+            <div>
+              <label class="p-label">مقدار</label>
+              <div style="position:relative;">
+                <input class="p-input" id="trade-amount-input" value="0.001" type="number" oninput="calcTradeTotal()" style="padding-left:50px;">
+                <span id="trade-sym-label" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-muted);">BTC</span>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:8px;">
+                ${[25,50,75,100].map(p=>`<button onclick="setTradePct(${p})" style="flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:var(--text-muted);font-family:'Vazirmatn',sans-serif;font-size:11px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'">${p}٪</button>`).join('')}
+              </div>
+            </div>
+
+            <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-muted);">مجموع</span><span id="trade-total-display" style="font-weight:600;">$${(pBTC*0.001).toFixed(2)}</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-muted);">معادل ریال</span><span style="font-size:12px;color:var(--accent-cyan);" id="trade-irr-display">${((pBTC*0.001*USD_IRR)/1e6).toFixed(1)} میلیون</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text-muted);">کارمزد</span><span style="color:var(--accent-cyan);">رایگان 🎉</span></div>
+            </div>
+
+            <button id="trade-submit-btn" onclick="handleBuyClick()" style="width:100%;padding:15px;background:linear-gradient(135deg,#06d6a0,#00b4a0);border:none;border-radius:12px;color:#001a15;font-size:15px;font-family:'Vazirmatn',sans-serif;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(6,214,160,0.25);transition:all 0.2s;">خرید BTC ←</button>
+          </div>
+        </div>
+
+        <!-- my open orders -->
+        <div class="g-card">
+          <div class="g-card-header"><span class="g-card-title">سفارشات باز</span></div>
+          <div class="g-card-body" style="text-align:center;padding:30px;">
+            <div style="font-size:32px;margin-bottom:10px;">📋</div>
+            <div style="font-size:13px;color:var(--text-muted);">سفارش باز وجود ندارد</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  `);
+  generateOrderBook(pBTC);
+  drawTradeChart(pBTC);
+}
+
+function setTradeTab(mode) {
+  const buyTab  = document.getElementById('trade-buy-tab');
+  const sellTab = document.getElementById('trade-sell-tab');
+  const btn     = document.getElementById('trade-submit-btn');
+  if (!buyTab) return;
+  if (mode === 'buy') {
+    buyTab.style.background  = 'rgba(6,214,160,0.1)';  buyTab.style.color  = 'var(--accent-green)'; buyTab.style.borderBottom = '2px solid var(--accent-green)';
+    sellTab.style.background = 'transparent'; sellTab.style.color = 'var(--text-muted)'; sellTab.style.borderBottom = '2px solid transparent';
+    btn.style.background = 'linear-gradient(135deg,#06d6a0,#00b4a0)'; btn.style.color = '#001a15';
+    btn.textContent = 'خرید ' + (currentTradeSym||'BTC') + ' ←';
+  } else {
+    sellTab.style.background = 'rgba(239,35,60,0.1)';   sellTab.style.color  = 'var(--accent-red)';   sellTab.style.borderBottom = '2px solid var(--accent-red)';
+    buyTab.style.background  = 'transparent'; buyTab.style.color = 'var(--text-muted)'; buyTab.style.borderBottom = '2px solid transparent';
+    btn.style.background = 'linear-gradient(135deg,#ef233c,#c1121f)'; btn.style.color = '#fff';
+    btn.textContent = 'فروش ' + (currentTradeSym||'BTC') + ' ←';
+  }
+}
+
+function setOrderType(el, t) {
+  el.parentNode.querySelectorAll('button').forEach(b => {
+    b.style.background = 'transparent'; b.style.color = 'var(--text-muted)'; b.style.borderColor = 'rgba(255,255,255,0.1)';
+  });
+  el.style.background = 'rgba(0,245,212,0.07)'; el.style.color = 'var(--accent-cyan)'; el.style.borderColor = 'rgba(0,245,212,0.35)';
+}
+
+let currentTradeSym = 'BTC';
+function selectTradePair(id, sym, icon, price) {
+  currentTradeSym = sym;
+  document.querySelectorAll('[id^="pair-"]').forEach(b => {
+    b.style.background = 'rgba(255,255,255,0.04)'; b.style.borderColor = 'rgba(255,255,255,0.1)';
+  });
+  const el = document.getElementById('pair-'+id);
+  if (el) { el.style.background = 'rgba(0,245,212,0.08)'; el.style.borderColor = 'rgba(0,245,212,0.4)'; }
+  document.getElementById('tp-name').textContent   = sym.charAt(0)+sym.slice(1).toLowerCase() + ' / USDT';
+  document.getElementById('tp-price').textContent  = '$' + price.toLocaleString('en',{maximumFractionDigits:2});
+  document.getElementById('tp-high').textContent   = '$' + (price*1.03).toLocaleString('en',{maximumFractionDigits:2});
+  document.getElementById('tp-low').textContent    = '$' + (price*0.97).toLocaleString('en',{maximumFractionDigits:2});
+  document.getElementById('tp-irr').textContent    = price >= 1000 ? (price*615000/1e9).toFixed(0)+' میلیارد' : (price*615000).toLocaleString('en',{maximumFractionDigits:0});
+  document.getElementById('trade-price-input').value = price;
+  const symLabel = document.getElementById('trade-sym-label');
+  if (symLabel) symLabel.textContent = sym;
+  const btn = document.getElementById('trade-submit-btn');
+  if (btn) btn.textContent = 'خرید ' + sym + ' ←';
+  generateOrderBook(price);
+  drawTradeChart(price);
+}
+
+function setTradePct(pct) {
+  const price = parseFloat(document.getElementById('trade-price-input')?.value)||1;
+  const budget = 500;
+  document.getElementById('trade-amount-input').value = ((budget * pct/100) / price).toFixed(6);
+  calcTradeTotal();
+}
+
+function calcTradeTotal() {
+  const price = parseFloat(document.getElementById('trade-price-input')?.value)||0;
+  const amt   = parseFloat(document.getElementById('trade-amount-input')?.value)||0;
+  const total = price * amt;
+  const td = document.getElementById('trade-total-display');
+  const ir = document.getElementById('trade-irr-display');
+  if (td) td.textContent = '$' + total.toFixed(2);
+  if (ir) ir.textContent = (total*615000/1e6).toFixed(1) + ' میلیون ریال';
+}
+
+function generateOrderBook(basePrice) {
+  const asks = document.getElementById('ob-asks');
+  const bids = document.getElementById('ob-bids');
+  if (!asks||!bids) return;
+  let askHtml = '', bidHtml = '';
+  for (let i=0;i<8;i++) {
+    const p = (basePrice*(1+0.001*(i+1))).toFixed(2);
+    const a = (Math.random()*2+0.1).toFixed(4);
+    const w = Math.floor(Math.random()*80+20);
+    askHtml += `<div style="display:grid;grid-template-columns:1fr 1fr;padding:5px 0;font-size:12px;position:relative;">
+      <div style="position:absolute;inset:0;right:auto;left:0;width:${w}%;background:rgba(239,35,60,0.06);border-radius:2px;"></div>
+      <span style="color:var(--accent-red);position:relative;">$${parseFloat(p).toLocaleString('en',{maximumFractionDigits:2})}</span>
+      <span style="text-align:left;color:var(--text-secondary);position:relative;">${a}</span>
+    </div>`;
+    const bp = (basePrice*(1-0.001*(i+1))).toFixed(2);
+    const ba = (Math.random()*2+0.1).toFixed(4);
+    const bw = Math.floor(Math.random()*80+20);
+    bidHtml += `<div style="display:grid;grid-template-columns:1fr 1fr;padding:5px 0;font-size:12px;position:relative;">
+      <div style="position:absolute;inset:0;right:auto;left:0;width:${bw}%;background:rgba(6,214,160,0.06);border-radius:2px;"></div>
+      <span style="color:var(--accent-green);position:relative;">$${parseFloat(bp).toLocaleString('en',{maximumFractionDigits:2})}</span>
+      <span style="text-align:left;color:var(--text-secondary);position:relative;">${ba}</span>
+    </div>`;
+  }
+  asks.innerHTML = askHtml; bids.innerHTML = bidHtml;
+}
+
+function drawTradeChart(basePrice) {
+  const canvas = document.getElementById('tradeChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = 200 * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  const W = canvas.offsetWidth, H = 200;
+
+  const pts = 60;
+  const data = [basePrice*0.97];
+  for (let i=1;i<pts;i++) {
+    data.push(data[i-1] * (1 + (Math.random()-0.48)*0.008));
+  }
+  data[data.length-1] = basePrice;
+
+  const min = Math.min(...data)*0.999, max = Math.max(...data)*1.001;
+  const x = i => (i/(pts-1))*W;
+  const y = v => H - ((v-min)/(max-min))*(H-20) - 10;
+
+  ctx.clearRect(0,0,W,H);
+  // gradient fill
+  const grad = ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'rgba(0,245,212,0.18)');
+  grad.addColorStop(1,'rgba(0,245,212,0)');
+  ctx.beginPath();
+  ctx.moveTo(x(0),y(data[0]));
+  for (let i=1;i<pts;i++) ctx.lineTo(x(i),y(data[i]));
+  ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath();
+  ctx.fillStyle = grad; ctx.fill();
+  // line
+  ctx.beginPath();
+  ctx.moveTo(x(0),y(data[0]));
+  for (let i=1;i<pts;i++) ctx.lineTo(x(i),y(data[i]));
+  ctx.strokeStyle='rgba(0,245,212,0.9)'; ctx.lineWidth=2; ctx.stroke();
+  // last dot
+  ctx.beginPath();
+  ctx.arc(x(pts-1),y(data[pts-1]),4,0,Math.PI*2);
+  ctx.fillStyle='#00f5d4'; ctx.fill();
+}
+
+function setChartTime(el, t) {
+  el.parentNode.querySelectorAll('button').forEach(b => {
+    b.style.background='transparent'; b.style.color='var(--text-muted)'; b.style.borderColor='rgba(255,255,255,0.1)';
+  });
+  el.style.background='rgba(0,245,212,0.1)'; el.style.color='var(--accent-cyan)'; el.style.borderColor='rgba(0,245,212,0.4)';
+  const p = parseFloat(document.getElementById('trade-price-input')?.value)||prices?.bitcoin||67420;
+  drawTradeChart(p);
+}
+setInterval(()=>{ if(currentPage==='trade') { const p=parseFloat(document.getElementById('trade-price-input')?.value)||prices?.bitcoin||67420; generateOrderBook(p); } },3000);
+
+
+// ══════════════════════════════
+// 2. BLOCKCHAIN PAGE
+// ══════════════════════════════
+function renderBlockchainPage() {
+  setPageContent(`
+  <div class="page-header-bar">
+    <div><div class="page-title">اکسپلورر بلاکچین</div><div class="page-sub">مشاهده بلاک‌ها و تراکنش‌های شبکه</div></div>
+    <button class="page-back-btn" onclick="closePage()">← بازگشت</button>
+  </div>
+  <div class="page-container">
+
+    <!-- stats -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
+      ${[
+        {label:'آخرین بلاک',val:'#849,312',clr:'var(--accent-cyan)'},
+        {label:'تراکنش منتظر',val:'۲,۴۸۱',clr:'var(--text-primary)'},
+        {label:'هش‌ریت',val:'۶۲۲ EH/s',clr:'var(--accent-green)'},
+        {label:'سختی شبکه',val:'۸۳.۱T',clr:'var(--accent-purple)'},
+      ].map(s=>`
+      <div class="g-card" style="text-align:center;padding:18px;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">${s.label}</div>
+        <div style="font-size:18px;font-weight:700;color:${s.clr};">${s.val}</div>
+      </div>`).join('')}
+    </div>
+
+    <!-- search tx -->
+    <div class="g-card" style="margin-bottom:20px;">
+      <div class="g-card-body" style="display:flex;gap:10px;">
+        <input class="p-input" id="bc-search" placeholder="جستجوی هش تراکنش یا آدرس کیف پول..." style="flex:1;">
+        <button class="action-btn action-btn-primary" onclick="searchBlockchain()">جستجو</button>
+      </div>
+    </div>
+
+    <!-- blocks visualization -->
+    <div class="g-card" style="margin-bottom:20px;">
+      <div class="g-card-header"><span class="g-card-title">بلاک‌های اخیر</span><span style="font-size:12px;color:var(--accent-cyan);">● زنده</span></div>
+      <div class="g-card-body">
+        <div id="bc-blocks-container" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px;"></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);">
+          <span>آخرین بلاک: <span style="color:var(--accent-cyan);" id="bc-last-time">۳ ثانیه پیش</span></span>
+          <span>میانگین زمان بلاک: <span style="color:var(--accent-cyan);">۱۰ دقیقه</span></span>
+          <span>پاداش ماینر: <span style="color:var(--accent-cyan);">۳.۱۲۵ BTC</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- latest transactions -->
+    <div class="g-card">
+      <div class="g-card-header"><span class="g-card-title">آخرین تراکنش‌ها</span>
+        <button class="action-btn action-btn-ghost" onclick="refreshBcTxs()" style="padding:6px 14px;font-size:12px;">🔄 بروزرسانی</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:600px;">
+          <thead><tr style="border-bottom:1px solid rgba(255,255,255,0.07);">
+            <th style="padding:12px 20px;text-align:right;font-size:11px;color:var(--text-muted);font-weight:500;">هش</th>
+            <th style="padding:12px 12px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">از</th>
+            <th style="padding:12px 12px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">به</th>
+            <th style="padding:12px 12px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">مقدار</th>
+            <th style="padding:12px 20px;text-align:left;font-size:11px;color:var(--text-muted);font-weight:500;">وضعیت</th>
+          </tr></thead>
+          <tbody id="bc-tx-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  `);
+  renderBcBlocks(); renderBcTxs();
+  setInterval(()=>{ if(currentPage==='blockchain'){ renderBcBlocks(); renderBcTxs(); } },8000);
+}
+
+function renderBcBlocks() {
+  const c = document.getElementById('bc-blocks-container');
+  if (!c) return;
+  const baseBlock = 849312;
+  let html = '';
+  for (let i=9;i>=0;i--) {
+    const num = baseBlock - i;
+    const isLatest = i===0;
+    const isPending = i===-1;
+    const txCount = Math.floor(Math.random()*2000+500);
+    html += `
+    <div onclick="showBlockDetail(${num})" style="background:${isLatest?'rgba(0,245,212,0.08)':'rgba(255,255,255,0.04)'};border:1px solid ${isLatest?'rgba(0,245,212,0.35)':'rgba(255,255,255,0.08)'};border-radius:12px;padding:14px;min-width:110px;cursor:pointer;transition:all 0.2s;text-align:center;"
+      onmouseover="this.style.borderColor='rgba(0,245,212,0.3)';this.style.transform='translateY(-2px)'"
+      onmouseout="this.style.borderColor='${isLatest?'rgba(0,245,212,0.35)':'rgba(255,255,255,0.08)'}';this.style.transform=''">
+      <div style="font-size:10px;color:${isLatest?'var(--accent-cyan)':'var(--text-muted)'};margin-bottom:4px;">${isLatest?'جدیدترین':'تأیید شده'}</div>
+      <div style="font-size:13px;font-weight:700;direction:ltr;">#${num.toLocaleString()}</div>
+      <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">${txCount} تراکنش</div>
+    </div>`;
+  }
+  c.innerHTML = html;
+}
+
+function renderBcTxs() {
+  const tbody = document.getElementById('bc-tx-table');
+  if (!tbody) return;
+  const hashes = ['a3f8','9c2d','7b1e','4d5a','2f9c','8e3b','1a7f','6c4d'];
+  tbody.innerHTML = hashes.map((h,i) => {
+    const amt = (Math.random()*5+0.001).toFixed(4);
+    const from = '1A' + Math.random().toString(36).slice(2,8).toUpperCase() + '...';
+    const to   = '3B' + Math.random().toString(36).slice(2,8).toUpperCase() + '...';
+    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04);transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background=''">
+      <td style="padding:12px 20px;font-size:12px;color:var(--accent-cyan);direction:ltr;">${h}...${Math.random().toString(16).slice(2,6)}</td>
+      <td style="padding:12px 12px;font-size:12px;color:var(--text-secondary);direction:ltr;">${from}</td>
+      <td style="padding:12px 12px;font-size:12px;color:var(--text-secondary);direction:ltr;">${to}</td>
+      <td style="padding:12px 12px;font-size:13px;font-weight:600;">${amt} BTC</td>
+      <td style="padding:12px 20px;"><span style="background:rgba(6,214,160,0.1);border:1px solid rgba(6,214,160,0.2);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--accent-green);">تأیید شد</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function showBlockDetail(num) {
+  alert('بلاک #' + num.toLocaleString() + '\nتراکنش‌ها: ' + Math.floor(Math.random()*2000+500) + '\nهش: ' + Math.random().toString(16).slice(2,34) + '...');
+}
+
+function refreshBcTxs() { renderBcTxs(); }
+
+function searchBlockchain() {
+  const q = document.getElementById('bc-search').value.trim();
+  if (!q) return;
+  alert('جستجو برای: ' + q + '\n(در نسخه واقعی به اکسپلورر متصل می‌شود)');
+}
+
+
+// ══════════════════════════════
+// 3. WALLET PAGE
+// ══════════════════════════════
+function renderWalletPage() {
+  if (!isLoggedIn) { closePage(); openModal('login'); return; }
+  const USD_IRR = 615000;
+  const walletCoins = [
+    {id:'bitcoin', sym:'BTC', icon:'₿', color:'#f7931a', bg:'rgba(247,147,26,0.15)', amount:0.082},
+    {id:'ethereum',sym:'ETH', icon:'Ξ', color:'#627eea', bg:'rgba(98,126,234,0.15)', amount:1.8},
+    {id:'solana',  sym:'SOL', icon:'◎', color:'#14f195', bg:'rgba(20,241,149,0.12)', amount:12.5},
+    {id:'avalanche',sym:'AVAX',icon:'▲',color:'#00d1f0', bg:'rgba(0,209,240,0.12)', amount:20},
+  ];
+  const totalUSD = walletCoins.reduce((s,c)=>s+(prices[c.id]||0)*c.amount,0);
+  const totalIRR = totalUSD * USD_IRR;
+
+  setPageContent(`
+  <div class="page-header-bar">
+    <div><div class="page-title">کیف پول من</div><div class="page-sub">مدیریت دارایی‌های دیجیتال</div></div>
+    <button class="page-back-btn" onclick="closePage()">← بازگشت</button>
+  </div>
+  <div class="page-container">
+
+    <!-- total balance -->
+    <div class="g-card" style="margin-bottom:20px;background:linear-gradient(135deg,rgba(67,97,238,0.12),rgba(123,47,255,0.10));border-color:rgba(67,97,238,0.2);">
+      <div class="g-card-body" style="padding:32px;text-align:center;">
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">موجودی کل</div>
+        <div style="font-size:40px;font-weight:700;letter-spacing:-2px;margin-bottom:6px;">$${totalUSD.toLocaleString('en',{maximumFractionDigits:2})}</div>
+        <div style="font-size:16px;color:var(--accent-cyan);">${(totalIRR/1e9).toFixed(1)} میلیارد ریال</div>
+        <div style="display:flex;justify-content:center;gap:12px;margin-top:24px;">
+          <button class="action-btn action-btn-green" onclick="showPage('trade')">واریز / خرید</button>
+          <button class="action-btn action-btn-red" onclick="openWithdrawModal()">برداشت</button>
+          <button class="action-btn action-btn-ghost" onclick="copyWalletAddress()">📋 کپی آدرس</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:20px;">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- coin balances -->
+        <div class="g-card">
+          <div class="g-card-header"><span class="g-card-title">دارایی‌ها</span></div>
+          <div class="g-card-body" style="padding-top:0;">
+            ${walletCoins.map(c => {
+              const p = prices[c.id]||0;
+              const usd = p * c.amount;
+              const irr = usd * USD_IRR;
+              const pct = totalUSD ? (usd/totalUSD*100).toFixed(1) : '0';
+              const ch  = changes[c.id]||0;
+              return `
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="width:42px;height:42px;border-radius:50%;background:${c.bg};display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:${c.color};">${c.icon}</div>
+                  <div>
+                    <div style="font-weight:600;">${c.sym}</div>
+                    <div style="font-size:12px;color:var(--text-muted);">${c.amount} ${c.sym}</div>
+                  </div>
+                </div>
+                <div style="flex:1;padding:0 20px;">
+                  <div style="background:rgba(255,255,255,0.05);border-radius:4px;height:4px;overflow:hidden;">
+                    <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,#4361ee,#00f5d4);border-radius:4px;"></div>
+                  </div>
+                  <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">${pct}٪ از پرتفوی</div>
+                </div>
+                <div style="text-align:left;">
+                  <div style="font-weight:700;">$${usd.toLocaleString('en',{maximumFractionDigits:2})}</div>
+                  <div style="font-size:11px;color:var(--accent-cyan);">${(irr/1e6).toFixed(0)} میلیون ریال</div>
+                  <div style="font-size:11px;color:${ch>=0?'var(--accent-green)':'var(--accent-red)'};">${ch>=0?'▲':'▼'}${Math.abs(ch).toFixed(2)}٪</div>
+                </div>
+                <div style="display:flex;gap:6px;margin-right:16px;">
+                  <button class="action-btn action-btn-green" style="padding:7px 12px;font-size:12px;" onclick="showPage('trade')">خرید</button>
+                  <button class="action-btn action-btn-red" style="padding:7px 12px;font-size:12px;" onclick="openWithdrawModal()">فروش</button>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- transaction history -->
+        <div class="g-card">
+          <div class="g-card-header"><span class="g-card-title">تاریخچه تراکنش‌ها</span>
+            <button class="action-btn action-btn-ghost" style="padding:6px 14px;font-size:12px;">خروجی Excel</button>
+          </div>
+          <div class="g-card-body" style="padding-top:0;">
+            ${[
+              {type:'buy', coin:'BTC',amount:'0.014',usd:'943',time:'امروز ۱۴:۳۲'},
+              {type:'sell',coin:'ETH',amount:'0.5',  usd:'1,790',time:'دیروز ۱۱:۱۵'},
+              {type:'buy', coin:'SOL',amount:'5',    usd:'892',time:'۲ روز پیش'},
+              {type:'buy', coin:'AVAX',amount:'20',  usd:'778',time:'۵ روز پیش'},
+            ].map(t=>`
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;border-radius:10px;background:${t.type==='buy'?'rgba(6,214,160,0.1)':'rgba(239,35,60,0.1)'};display:flex;align-items:center;justify-content:center;font-size:16px;">${t.type==='buy'?'↓':'↑'}</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;">${t.type==='buy'?'خرید':'فروش'} ${t.coin}</div>
+                  <div style="font-size:11px;color:var(--text-muted);">${t.time}</div>
+                </div>
+              </div>
+              <div style="text-align:left;">
+                <div style="font-weight:600;color:${t.type==='buy'?'var(--accent-green)':'var(--accent-red)'};">${t.type==='buy'?'+':'-'}${t.amount} ${t.coin}</div>
+                <div style="font-size:11px;color:var(--text-muted);">$${t.usd}</div>
+              </div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- right sidebar -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <!-- receive address -->
+        <div class="g-card">
+          <div class="g-card-header"><span class="g-card-title">آدرس واریز</span></div>
+          <div class="g-card-body" style="text-align:center;">
+            <div style="width:120px;height:120px;background:rgba(255,255,255,0.06);border-radius:14px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-muted);border:1px dashed rgba(255,255,255,0.15);">QR Code</div>
+            <div style="font-size:11px;color:var(--text-muted);word-break:break-all;background:rgba(255,255,255,0.04);padding:10px;border-radius:8px;direction:ltr;margin-bottom:12px;">1A2B3C4D5E6F7G8H9I0J...</div>
+            <button class="action-btn action-btn-ghost" style="width:100%;" onclick="copyWalletAddress()">📋 کپی آدرس</button>
+          </div>
+        </div>
+
+        <!-- quick stats -->
+        <div class="g-card">
+          <div class="g-card-header"><span class="g-card-title">آمار پرتفوی</span></div>
+          <div class="g-card-body" style="display:flex;flex-direction:column;gap:12px;">
+            ${[
+              {l:'سود/زیان کل',v:'+$1,234',c:'var(--accent-green)'},
+              {l:'بهترین دارایی',v:'BTC +12٪',c:'var(--accent-green)'},
+              {l:'ضعیف‌ترین',v:'ADA -3٪',c:'var(--accent-red)'},
+              {l:'تعداد معاملات',v:'۴۷',c:'var(--text-primary)'},
+            ].map(s=>`
+            <div style="display:flex;justify-content:space-between;font-size:13px;">
+              <span style="color:var(--text-muted);">${s.l}</span>
+              <span style="font-weight:600;color:${s.c};">${s.v}</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  `);
+}
+
+function copyWalletAddress() {
+  navigator.clipboard?.writeText('1A2B3C4D5E6F7G8H9I0J...');
+  alert('آدرس کپی شد!');
+}
+
+function openWithdrawModal() {
+  alert('برای برداشت با پشتیبانی تماس بگیرید یا از بخش پشتیبانی اقدام کنید.');
+}
+
+
+// ══════════════════════════════
+// 4. SUPPORT PAGE
+// ══════════════════════════════
+function renderSupportPage() {
+  setPageContent(`
+  <div class="page-header-bar">
+    <div><div class="page-title">پشتیبانی</div><div class="page-sub">تیم ما آماده کمک به شماست</div></div>
+    <button class="page-back-btn" onclick="closePage()">← بازگشت</button>
+  </div>
+  <div class="page-container">
+
+    <!-- contact cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:24px;">
+      ${[
+        {icon:'📞',title:'تماس مستقیم',val:'۰۹۳۰۶۸۸۷۵۴۴',sub:'شنبه تا پنجشنبه · ۹ تا ۲۱',color:'rgba(6,214,160,0.15)',border:'rgba(6,214,160,0.3)',href:'tel:09306887544',vcolor:'var(--accent-green)'},
+        {icon:'💬',title:'اپلیکیشن بله',val:'@bardi1392',sub:'پاسخ سریع · زیر ۵ دقیقه',color:'rgba(67,97,238,0.12)',border:'rgba(67,97,238,0.3)',href:'https://ble.ir/bardi1392',vcolor:'#4361ee'},
+        {icon:'✈️',title:'تلگرام',val:'@bardim92',sub:'پشتیبانی ۲۴ ساعته',color:'rgba(0,136,204,0.12)',border:'rgba(0,136,204,0.3)',href:'https://t.me/bardim92',vcolor:'#0088cc'},
+      ].map(c=>`
+      <div onclick="window.open('${c.href}','_blank')" style="background:${c.color};border:1px solid ${c.border};border-radius:18px;padding:28px 24px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;"
+        onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.3)'"
+        onmouseout="this.style.transform='';this.style.boxShadow=''">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,${c.border},transparent);"></div>
+        <div style="font-size:36px;margin-bottom:14px;">${c.icon}</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:8px;font-weight:500;">${c.title}</div>
+        <div style="font-size:20px;font-weight:700;color:${c.vcolor};letter-spacing:0.5px;direction:ltr;">${c.val}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">${c.sub}</div>
+      </div>`).join('')}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+      <!-- ticket form -->
+      <div class="g-card">
+        <div class="g-card-header"><span class="g-card-title">ارسال تیکت</span></div>
+        <div class="g-card-body" style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <label class="p-label">موضوع</label>
+            <select class="p-input" style="cursor:pointer;">
+              <option>مشکل واریز/برداشت</option>
+              <option>مشکل احراز هویت</option>
+              <option>مشکل معامله</option>
+              <option>سایر</option>
+            </select>
+          </div>
+          <div>
+            <label class="p-label">نام و نام خانوادگی</label>
+            <input class="p-input" id="sup-name" placeholder="نام شما" type="text">
+          </div>
+          <div>
+            <label class="p-label">ایمیل</label>
+            <input class="p-input" id="sup-email" placeholder="email@example.com" type="email" dir="ltr">
+          </div>
+          <div>
+            <label class="p-label">پیام</label>
+            <textarea class="p-input" id="sup-msg" rows="4" placeholder="مشکل خود را شرح دهید..." style="resize:vertical;font-family:'Vazirmatn',sans-serif;line-height:1.6;"></textarea>
+          </div>
+          <button class="action-btn action-btn-primary" style="width:100%;padding:14px;" onclick="submitTicket()">ارسال تیکت ←</button>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="g-card">
+        <div class="g-card-header"><span class="g-card-title">سوالات متداول</span></div>
+        <div class="g-card-body" style="padding-top:0;display:flex;flex-direction:column;gap:4px;" id="faq-list">
+          ${[
+            {q:'چطور واریز کنم؟',a:'از بخش کیف پول، آدرس واریز خود را کپی کرده و از کیف پول خود انتقال دهید.'},
+            {q:'کارمزد معاملات چقدر است؟',a:'۳۰ روز اول کارمزد صفر است. بعد از آن ۰.۱٪ کارمزد لحاظ می‌شود.'},
+            {q:'احراز هویت چند روز طول می‌کشد؟',a:'احراز هویت معمولاً در کمتر از ۲۴ ساعت انجام می‌شود.'},
+            {q:'آیا امنیت سایت تضمین شده است؟',a:'بله، از رمزگذاری AES-256 و احراز دو مرحله‌ای استفاده می‌کنیم.'},
+            {q:'چطور رمز عبورم را بازیابی کنم؟',a:'از صفحه ورود روی «فراموشی رمز» کلیک کنید.'},
+          ].map((f,i)=>`
+          <div style="border-bottom:1px solid rgba(255,255,255,0.05);overflow:hidden;">
+            <button onclick="toggleFaq(${i})" style="width:100%;text-align:right;padding:14px 0;background:none;border:none;color:var(--text-primary);font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+              ${f.q} <span id="faq-arrow-${i}" style="color:var(--accent-cyan);transition:transform 0.2s;">▼</span>
+            </button>
+            <div id="faq-ans-${i}" style="display:none;font-size:13px;color:var(--text-muted);padding-bottom:14px;line-height:1.7;">${f.a}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- status banner -->
+    <div style="margin-top:20px;background:rgba(6,214,160,0.07);border:1px solid rgba(6,214,160,0.2);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:16px;">
+      <div style="width:10px;height:10px;border-radius:50%;background:var(--accent-green);animation:pulse 2s infinite;flex-shrink:0;"></div>
+      <div>
+        <div style="font-weight:600;font-size:14px;">همه سیستم‌ها عملیاتی هستند</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">آخرین بررسی: چند ثانیه پیش · آپتایم: ۹۹.۹٪</div>
+      </div>
+    </div>
+  </div>
+  `);
+}
+
+function toggleFaq(i) {
+  const ans   = document.getElementById('faq-ans-'+i);
+  const arrow = document.getElementById('faq-arrow-'+i);
+  const open  = ans.style.display === 'block';
+  ans.style.display = open ? 'none' : 'block';
+  arrow.style.transform = open ? '' : 'rotate(180deg)';
+}
+
+function submitTicket() {
+  const name = document.getElementById('sup-name')?.value.trim();
+  const email= document.getElementById('sup-email')?.value.trim();
+  const msg  = document.getElementById('sup-msg')?.value.trim();
+  if (!name||!email||!msg) { alert('لطفاً همه فیلدها را پر کنید'); return; }
+  alert('تیکت شما ارسال شد! در اسرع وقت پاسخ می‌دهیم 🙏');
+  document.getElementById('sup-name').value='';
+  document.getElementById('sup-email').value='';
+  document.getElementById('sup-msg').value='';
+}
+
+// close page on Escape
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape' && document.getElementById('pageOverlay')?.style.display==='block') closePage();
+});
+</script>
+
+</div>
+
+</body>
+</html>
